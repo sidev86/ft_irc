@@ -1,9 +1,11 @@
-#include "ft_irc.hpp"
+#include "../header/ft_irc.hpp"
 
 
 	
 void kick_command(const std::string& oper_name, const std::string& channel_name, const std::string& user_name, std::vector<Channel>& channels) 
 {
+	std::cout << "Kick function" << std::endl;
+	std::cout << oper_name << " " << channel_name << " " << user_name << std::endl;
 	std::string message;
 	// Trova il canale
 	std::vector<Channel>::iterator it = findChannel(channel_name, channels);

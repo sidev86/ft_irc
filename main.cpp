@@ -1,44 +1,93 @@
-#include "ft_irc.hpp"
-#include <iostream>
+#include "header/ft_irc.hpp"
 
-int main() 
+bool valid_port(const std::string &s, ft_irc &irc)
 {
-	std::vector<Channel> channels;
-	channels.push_back(Channel("general"));
-	
-	channels.push_back(Channel("random"));
-	channels.push_back(Channel("banana"));
-
-	channels[0].addUser("pincopallo");
-	channels[0].addUser("tiziocaio");
-	channels[0].addUser("vader");
-	channels[0]._topic = "Cucina";
-	channels[0].addOperatorUser("vader");
-	channels[0].addOperatorUser("luke");
-	
-	std::cout << "Numero di utenti del canale " <<  channels[0]._name << " => " << channels[0]._num_users << std::endl;
-	if (channels[0]._num_users > 0)
-	{
-		std::cout << "\n=== Utenti ===\n" << std::endl;
-		for (unsigned int x = 0; x < channels[0]._num_users; x++)
-		{
-			std::cout << channels[0].users[x].user << std::endl;
-		}
-		std::cout << std::endl;
-	}
-	std::cout << "Numero di utenti del canale " <<  channels[1]._name << " => " << channels[1]._num_users << std::endl;
-	kick_command("luke", "general", "pincopallo", channels);
-	std::cout << "Numero di utenti del canale " <<  channels[0]._name << " => " << channels[0]._num_users << std::endl;
-	kick_command("vader", "unknown", "pincopallo", channels);
-	kick_command("vader", "banana", "pincopallo", channels);
-	
-	std::cout << "\n\n\n";
-	topic_command("vader", "unknown", "Sport", channels);
-	topic_command("pincopallo", "general", "Sport", channels);
-	topic_command("pincopallo", "general", "", channels);
-	topic_command("vader", "general", "Sport", channels);
-	
-
-	return 0;
+    int num = std::atoi(s.c_str());
+    if (num < 0 || num > 65535)
+    {
+        colored_message("🚨Error: \n(not a valid port number)🚨", RED);
+        return false;
+    }
+    if (s.empty())
+    {
+        colored_message("🚨Error: \n(no number found)🚨", RED);
+        return false;
+    }
+    for (size_t i = 0; i < s.size(); i++)
+    {
+        if (!std::isdigit(s[i]))
+        {
+            colored_message("🚨Error: \n(not a number)🚨", RED);
+            return false;
+        }
+    }
+    irc.port = s;
+    return true;
 }
 
+bool valid_password(const std::string &s, ft_irc &irc)
+{
+    if (s.empty())
+    {
+        colored_message("🚨Error: \n(no password found)🚨", RED);
+        return (false);
+    }
+    if (s.size() < 8)
+    {
+        colored_message("🚨Error: \n(password too short)🚨", RED);
+        return (false);
+    }
+    int up_case = 0;
+    int low_case = 0;
+    int num = 0;
+    int symbol = 0;
+    for (size_t i = 0; i < s.size(); i++)
+    {
+        if (std::isupper(s[i]))
+            up_case = 1;
+        else if (std::islower(s[i]))
+            low_case = 1;
+        else if (std::isdigit(s[i]))
+            num = 1;
+        else if (std::ispunct(s[i]))
+            symbol = 1;
+    }
+    if (up_case == 0)
+    {
+        colored_message("🚨Error: \n(password must contain at least one uppercase letter)🚨", RED);
+        return (false);
+    }
+    if (low_case == 0)
+    {
+        colored_message("🚨Error: \n(password must contain at least one lowercase letter)🚨", RED);
+        return (false);
+    }
+    if (num == 0)
+    {
+        colored_message("🚨Error: \n(password must contain at least one number)🚨", RED);
+        return (false);
+    }
+    if (symbol == 0)
+    {
+        colored_message("🚨Error: \n(password must contain at least one special character)🚨", RED);
+        return (false);
+    }
+    irc.pass_server = s;
+    return (true);
+}
+
+int main(int c, char **v)
+{
+    ft_irc irc;
+    if (c != 3)
+    {
+        colored_message("🚨Error: \n(not valid number of arguments)🚨", RED);
+        return (1);
+    }
+    if (valid_port(v[1], irc) == false)
+        return (1);
+    if (valid_password(v[2], irc) == false)
+        return (1);
+    if (handle_server(irc) == 1)
+        return (1);
+}

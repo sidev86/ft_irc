@@ -1,5 +1,5 @@
-#include "Channel.hpp"
-#include "ft_irc.hpp"  
+#include "../header/Channel.hpp"
+#include "../header/ft_irc.hpp"  
 
 Channel::Channel(std::string name) : _name(name), _num_users(0) {}
 Channel::~Channel() {}

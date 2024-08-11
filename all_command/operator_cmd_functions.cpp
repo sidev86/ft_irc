@@ -1,4 +1,4 @@
-#include "ft_irc.hpp"
+#include "../header/ft_irc.hpp"
 
 
 std::vector<Channel>::iterator findChannel(const std::string& channel_name, std::vector<Channel>& channels) 

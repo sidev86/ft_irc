@@ -99,4 +99,7 @@ std::vector<client_info>::iterator	findUserInChannel(const std::string& user_nam
 bool	isOperator(const std::string& oper_name, std::vector<client_info>& operatorUsers);
 void	sendToAll(std::vector<client_info>& users, const std::string& message);
 void	sendToClient(client_info& client, const std::string& message);
+void	operator_command(ft_irc& irc);
+int	check_number_of_arguments(std::string command);
+void	send_to_operator_function(ft_irc& irc);
 #endif
