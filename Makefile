@@ -13,7 +13,10 @@ SRCS =	main.cpp \
 		all_command/operator_command.cpp \
 		all_command/Channel.cpp \
 		all_command/operator_cmd_functions.cpp \
-		all_command/kick_cmd.cpp
+		all_command/single_commands/kick_cmd.cpp \
+		all_command/single_commands/topic_cmd.cpp
+		
+		
 		
 OBJS = $(SRCS:.cpp=.o)
 

@@ -1,17 +1,19 @@
-#include "../header/ft_irc.hpp"
+#include "../../header/ft_irc.hpp"
 
 
 	
-void kick_command(const std::string& oper_name, const std::string& channel_name, const std::string& user_name, std::vector<Channel>& channels) 
+void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& user_name) 
 {
 	std::cout << "Kick function" << std::endl;
+	
 	std::cout << oper_name << " " << channel_name << " " << user_name << std::endl;
 	std::string message;
 	// Trova il canale
-	std::vector<Channel>::iterator it = findChannel(channel_name, channels);
-	if (it == channels.end()) 
+	std::vector<Channel>::iterator it = findChannel(channel_name, irc.channels);
+	if (it == irc.channels.end()) 
 	{
-		std::cout << "Error: Channel not found!" << std::endl;
+		//std::cout << "Error: Channel not found!" << std::endl;
+		send_error_message(irc, i, "403", ":No such channel.", irc.client[i].client_sock);
 		return;
 	}
 	std::cout << "Canale Trovato." << std::endl;

@@ -90,7 +90,7 @@ void    welcome_msg(ft_irc &irc, int i);
 void    nick_command(ft_irc &irc, int i);
 
 //OPERATOR COMMANDS
-void	kick_command(const std::string& oper_name, const std::string& channel_name, const std::string& user_name, std::vector<Channel>& channels);
+void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& user_name);
 void	topic_command(const std::string& oper_name, const std::string& channel_name, const std::string& new_topic,  std::vector<Channel>& channels);
 
 //OPERATOR FUNCTIONS
@@ -99,7 +99,7 @@ std::vector<client_info>::iterator	findUserInChannel(const std::string& user_nam
 bool	isOperator(const std::string& oper_name, std::vector<client_info>& operatorUsers);
 void	sendToAll(std::vector<client_info>& users, const std::string& message);
 void	sendToClient(client_info& client, const std::string& message);
-void	operator_command(ft_irc& irc);
+void	operator_command(ft_irc& irc, int i);
 int	check_number_of_arguments(std::string command);
-void	send_to_operator_function(ft_irc& irc);
+void	send_to_operator_function(ft_irc& irc, int i);
 #endif
