@@ -42,7 +42,7 @@ void	send_to_operator_function(ft_irc& irc, int i)
 	}
 	else if (word == "TOPIC")
 	{
-		topic_command("vader", args[0], args[1], irc.channels);
+		topic_command(irc, i, "vader", args[0], args[1]);
 	}
 	
 	
@@ -57,8 +57,10 @@ void	operator_command(ft_irc& irc, int i)
 	//splittare il buffer ovvero il comando, contare gli argomenti del comando e se sono
 	//più di quelli previsti dò errore
 	if (!check_number_of_arguments(irc.buffer))
+	{
 		send_error_message(irc, i, "461", ":Not enough parameters.", irc.client[i].client_sock);
-	
+		return;
+	}
 	
 	send_to_operator_function(irc, i);
 	
