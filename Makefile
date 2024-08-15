@@ -10,12 +10,13 @@ SRCS =	main.cpp \
 		handling_connections/handle_client.cpp \
 		handling_connections/handle_server.cpp \
 		all_command/single_commands/quit_command.cpp \
-		all_command/operator_command.cpp \
+		all_command/handle_commands.cpp \
 		all_command/Channel.cpp \
-		all_command/operator_cmd_functions.cpp \
+		all_command/cmd_functions.cpp \
 		all_command/single_commands/kick_cmd.cpp \
-		all_command/single_commands/topic_cmd.cpp
-		
+		all_command/single_commands/topic_cmd.cpp \
+		all_command/single_commands/invite_cmd.cpp \
+		all_command/single_commands/join_cmd.cpp
 		
 		
 OBJS = $(SRCS:.cpp=.o)

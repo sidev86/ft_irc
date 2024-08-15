@@ -31,7 +31,7 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 		//sendToClient(*oper_it, message);
 		return;
 	}
-	// visualizzazione topic attuale
+	//modifica topic canale
 	else if (!new_topic.empty() && isOperator(oper_name, it->operatorUsers))
 	{
 		it->_topic = new_topic;
@@ -39,6 +39,7 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 		client_message(irc, i, "TOPIC", message);
 		//sendToAll(it->users, message);
 	}	
+	// visualizzazione topic attuale
 	else
 	{
 		message = "Topic of the channel => " + it->_topic;

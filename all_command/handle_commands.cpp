@@ -17,13 +17,17 @@ int check_number_of_arguments(std::string command)
 		return 1;
 	else if (first_wd == "TOPIC" && (num_args == 1 || num_args == 2))
 		return 1;
+	else if (first_wd == "INVITE" && num_args == 2)
+		return 1;
+	else if (first_wd == "JOIN" && num_args == 1)
+		return 1;
 	else
 		return 0;
 	return 0;
 }
 
 
-void	send_to_operator_function(ft_irc& irc, int i)
+void	send_to_command_function(ft_irc& irc, int i)
 {
 	std::stringstream ss(irc.buffer);
 	std::string word;
@@ -32,26 +36,20 @@ void	send_to_operator_function(ft_irc& irc, int i)
 	int index = 0;
 	
 	while(ss >> args[index])
-	{
 		index++;
-	}
 	
 	if (word == "KICK")
-	{
 		kick_command(irc, i, "vader", args[0], args[1]);
-	}
 	else if (word == "TOPIC")
-	{
 		topic_command(irc, i, "vader", args[0], args[1]);
-	}
-	
-	
-	
+	else if (word == "INVITE")
+		invite_command(irc, i, "vader", args[0], args[1]);
+	else if (word == "JOIN")
+		join_command(irc, i, args[0], irc.client[i].user);
 }
 
 void	operator_command(ft_irc& irc, int i)
 {
-	irc = irc;
 	std::cout << "Operator command: " << irc.buffer << std::endl;
 
 	//splittare il buffer ovvero il comando, contare gli argomenti del comando e se sono
@@ -62,9 +60,20 @@ void	operator_command(ft_irc& irc, int i)
 		return;
 	}
 	
-	send_to_operator_function(irc, i);
+	send_to_command_function(irc, i);
 	
 	
 	//se il numero di argomenti è giusto richiamo funzione che esegue istruzioni relative al comando
 
+}
+
+void	channel_command(ft_irc& irc, int i)
+{
+	if (!check_number_of_arguments(irc.buffer))
+	{
+		send_error_message(irc, i, "461", ":Not enough parameters.", irc.client[i].client_sock);
+		return;
+	}
+	
+	send_to_command_function(irc, i);
 }
