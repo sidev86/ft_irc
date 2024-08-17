@@ -22,24 +22,12 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 		send_error_message(irc, i, "482", ":You're not channel operator.", irc.client[i].client_sock);
 		return;
 	}
-	std::cout << "Operator Trovato." << std::endl;*/
+	std::cout << "Operator Found." << std::endl;*/
 	
-	message =  oper_name + " invited you to join " + channel_name + " channel.\nDo you wanna join? Y/N: ";
+	message =  oper_name + " invited you to join " + channel_name + " channel.";
 	client_message(irc, i, "INVITE", message);
 	
-	std::string user_response(irc.buffer); // Converti il buffer in una stringa
-	std::cout << "BUFFER = " << irc.buffer << "." << std::endl;
 
-	if (user_response == "y" || user_response == "Y") 
-	{
-		message = user_name + " has joined " + channel_name + " channel.";
-		client_message(irc, i, "NOTIFY", message);
-	} 
-	else if (user_response == "n" || user_response == "N") 
-	{
-		message = user_name + " rejected invite to " + channel_name + " channel.";
-		client_message(irc, i, "NOTIFY", message);
-	}
 	
 	
 

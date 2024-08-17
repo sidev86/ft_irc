@@ -32,3 +32,8 @@ void Channel::removeUser(const std::string& username)
     }
 }
 
+bool Channel::channelHasName(const std::string& name) const 
+{
+	return _name == name;
+}
+
