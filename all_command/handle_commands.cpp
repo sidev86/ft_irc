@@ -39,11 +39,11 @@ void	send_to_command_function(ft_irc& irc, int i)
 		index++;
 	
 	if (word == "KICK")
-		kick_command(irc, i, "vader", args[0], args[1]);
+		kick_command(irc, i, irc.client[i].user, args[0], args[1]);
 	else if (word == "TOPIC")
-		topic_command(irc, i, "vader", args[0], args[1]);
+		topic_command(irc, i,  irc.client[i].user, args[0], args[1]);
 	else if (word == "INVITE")
-		invite_command(irc, i, "vader", args[0], args[1]);
+		invite_command(irc, i,  irc.client[i].user, args[0], args[1]);
 	else if (word == "JOIN")
 		join_command(irc, i, args[0], irc.client[i].user);
 }

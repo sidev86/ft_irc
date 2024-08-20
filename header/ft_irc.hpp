@@ -92,7 +92,7 @@ void    nick_command(ft_irc &irc, int i);
 //COMMANDS
 void	kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& user_name);
 void	topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& new_topic);
-void	invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& user_name);
+void	invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name);
 void join_command(ft_irc& irc, int i, const std::string& channel_name, const std::string& user_name);
 
 //OPERATOR FUNCTIONS

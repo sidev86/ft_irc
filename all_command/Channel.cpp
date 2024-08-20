@@ -1,7 +1,15 @@
 #include "../header/Channel.hpp"
 #include "../header/ft_irc.hpp"  
 
-Channel::Channel(std::string name) : _name(name), _num_users(0) {}
+Channel::Channel(std::string name) 
+{
+	this->_name = name; 
+	this->_num_users = 0;
+	this->_topic = "";
+	this->invite_only = false;
+	this->has_password = false; 
+	this->topic_settable = true;
+}
 Channel::~Channel() {}
 
 void Channel::addUser(const std::string& username) 

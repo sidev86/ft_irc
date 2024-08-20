@@ -15,7 +15,7 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 	
 	if (!check_channel_name(channel_name))
 	{
-		std::string message = ":No such channel";
+		message = ":No such channel";
         	send_error_message(irc, i, "403", message, irc.client[i].client_sock);
         	return;
 	}
@@ -26,32 +26,43 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 	{
 		// Channel not exist, so create
 		Channel new_channel(channel_name);
+		
+		// Add channel to the list of channels
 		irc.channels.push_back(new_channel);
-		it = irc.channels.end() - 1; // Ottieni l'iteratore al nuovo canale
+		
+		// Obtain iterator to the new channel
+		it = irc.channels.end() - 1; 
+		
 		// Add user to new channel
 		it->addUser(user_name);
 
 		message = user_name + " has joined the newly created channel " + channel_name;
 		client_message(irc, i, "JOIN", message);
-		
-		//std::cout << "Created new channel: " << channel_name << std::endl;
-		//std::cout << user_name << " has joined the newly created channel " << channel_name << std::endl;
 	}
 	else
 	{
-		// Aggiungi l'utente al canale esistente
+		// If channel is invite-only, only users that received an invite from operator can join
+		
+		// TODO create a function to check if the user is in the list of invitedUsers of the channel
+		if (it->invite_only == true)  // && user is in list of invited users (create function)
+		{
+			message = channel_name + " :Cannot join channel (+i)";
+			send_error_message(irc, i, "473", message, irc.client[i].client_sock);
+			return;	
+		}
+		// Add user to existing channel
 		it->addUser(user_name);
-		std::cout << user_name << " has joined the channel " << channel_name << std::endl;
+		
+		
+		message = user_name + " has joined the channel " + channel_name;
+		client_message(irc, i, "JOIN", message);
+		
+		//TODO send to all clients in channel
 	}
 
 	// Send notification to client
 	message = "Welcome to the channel " + channel_name;
 	client_message(irc, i, "JOIN", message);
-	
-	// TODO check type of channel. if is invite-only, only users that received an invite from operator can join
-	
-	// TODO if user was banned on this channel cannot join again
-	
 	
 		
 }

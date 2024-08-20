@@ -20,6 +20,7 @@ class Channel
 	    unsigned int _num_users;
 	    std::vector<client_info> users; // Usa client_info qui
 	    std::vector<client_info> operatorUsers;
+	    std::vector<client_info> invitedUsers;
 	    //MODES
 	    bool invite_only;
 	    bool has_password;
