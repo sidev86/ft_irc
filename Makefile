@@ -16,7 +16,8 @@ SRCS =	main.cpp \
 		all_command/single_commands/kick_cmd.cpp \
 		all_command/single_commands/topic_cmd.cpp \
 		all_command/single_commands/invite_cmd.cpp \
-		all_command/single_commands/join_cmd.cpp
+		all_command/single_commands/join_cmd.cpp \
+		all_command/single_commands/mode_cmd.cpp
 		
 		
 OBJS = $(SRCS:.cpp=.o)

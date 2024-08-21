@@ -5,10 +5,14 @@ Channel::Channel(std::string name)
 {
 	this->_name = name; 
 	this->_num_users = 0;
+	this->_max_users = -1;
 	this->_topic = "";
 	this->invite_only = false;
 	this->has_password = false; 
 	this->topic_settable = true;
+	this->users_limit = false;
+	this->has_key = false;
+	
 }
 Channel::~Channel() {}
 

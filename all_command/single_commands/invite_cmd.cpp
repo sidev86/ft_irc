@@ -1,27 +1,5 @@
 #include "../../header/ft_irc.hpp"
 
-int nick_exist(std::vector<client_info>& clients, const std::string& nickname)
-{
-	for (std::vector<client_info>::iterator it = clients.begin(); it != clients.end(); ++it)
-	{
-		if (it->nick == nickname)
-			return 1;
-	}
-	return 0;
-}
-
-
-int get_user_index(std::vector<client_info>& clients, const std::string& nickname)
-{
-	int i = 0;
-	for (std::vector<client_info>::iterator it = clients.begin(); it != clients.end(); ++it)
-	{
-		if (it->nick == nickname)
-			return i;
-		i++;
-	}
-	return -1;
-}
 
 void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name)
 {
@@ -66,9 +44,12 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 	i = get_user_index(irc.client, nick_name);
 	if (i != -1)
 	{
+		//TODO use RPL_INVITING cmd response to communicate invite to end-client (?)
+		
 		ch_iter->invitedUsers.push_back(irc.client[i]);
 		message =  oper_name + " invited you to join " + channel_name + " channel.";
 		client_message(irc, i, "INVITE", message);
+		
 	}
 
 }

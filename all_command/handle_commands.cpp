@@ -21,6 +21,8 @@ int check_number_of_arguments(std::string command)
 		return 1;
 	else if (first_wd == "JOIN" && num_args == 1)
 		return 1;
+	else if (first_wd == "MODE" && (num_args == 2 || num_args == 3))
+		return 1;
 	else
 		return 0;
 	return 0;
@@ -46,6 +48,8 @@ void	send_to_command_function(ft_irc& irc, int i)
 		invite_command(irc, i,  irc.client[i].user, args[0], args[1]);
 	else if (word == "JOIN")
 		join_command(irc, i, args[0], irc.client[i].user);
+	else if (word =="MODE")
+		mode_command(irc, i, irc.client[i].user, args[0], args[1], args[2]);
 }
 
 void	operator_command(ft_irc& irc, int i)

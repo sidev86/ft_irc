@@ -32,6 +32,30 @@ bool isOperator(const std::string& oper_name, std::vector<client_info>& operator
     return false;
 }
 
+int nick_exist(std::vector<client_info>& clients, const std::string& nickname)
+{
+	for (std::vector<client_info>::iterator it = clients.begin(); it != clients.end(); ++it)
+	{
+		if (it->nick == nickname)
+			return 1;
+	}
+	return 0;
+}
+
+
+int get_user_index(std::vector<client_info>& clients, const std::string& nickname)
+{
+	int i = 0;
+	for (std::vector<client_info>::iterator it = clients.begin(); it != clients.end(); ++it)
+	{
+		if (it->nick == nickname)
+			return i;
+		i++;
+	}
+	return -1;
+}
+
+
 void sendToAll(std::vector<client_info>& users, const std::string& message) 
 {
    std::cout << "message to send to all => " << message << std::endl;

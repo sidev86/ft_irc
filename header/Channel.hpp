@@ -17,7 +17,9 @@ class Channel
 	    ~Channel();
 	    std::string _name;
 	    std::string _topic;
+	    std::string _key;
 	    unsigned int _num_users;
+	    int _max_users;
 	    std::vector<client_info> users; // Usa client_info qui
 	    std::vector<client_info> operatorUsers;
 	    std::vector<client_info> invitedUsers;
@@ -25,6 +27,8 @@ class Channel
 	    bool invite_only;
 	    bool has_password;
 	    bool topic_settable;
+	    bool users_limit;
+	    bool has_key;
 	    
 	    bool channelHasName(const std::string& name) const;
 	    
