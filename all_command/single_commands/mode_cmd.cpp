@@ -23,9 +23,9 @@ void set_invite_mode(const std::string& option, Channel& channel)
 void set_topic_mode(const std::string& option, Channel& channel)
 {
 	if (option[0] == '+')
-		channel.topic_settable = true;
+		channel.topic_all_users = false;
 	else
-		channel.topic_settable = false;
+		channel.topic_all_users = true;
 }
 
 void set_users_limit_mode(const std::string& option, Channel& channel, const std::string& option_param)

@@ -9,7 +9,7 @@ Channel::Channel(std::string name)
 	this->_topic = "";
 	this->invite_only = false;
 	this->has_password = false; 
-	this->topic_settable = true;
+	this->topic_all_users = false;
 	this->users_limit = false;
 	this->has_key = false;
 	
@@ -43,6 +43,7 @@ void Channel::removeUser(const std::string& username)
         }
     }
 }
+
 
 bool Channel::channelHasName(const std::string& name) const 
 {

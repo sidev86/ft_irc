@@ -1,7 +1,7 @@
 #include "../../header/ft_irc.hpp"
 
 
-void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name)
+void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& nick_name, const std::string& channel_name)
 {
 	std::string message;
 	
@@ -25,6 +25,7 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 	// Check if nick exist in server
 	if (!nick_exist(irc.client, nick_name))
 	{
+		//TOFIX should print the nick who was searching
 		message = ":No such nick/channel";
 		send_error_message(irc, i, "401", message, irc.client[i].client_sock);
 		return;

@@ -35,29 +35,31 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 		
 		// Add user to new channel
 		it->addUser(user_name);
+		it->addOperatorUser(user_name);
 
 		message = user_name + " has joined the newly created channel " + channel_name;
 		client_message(irc, i, "JOIN", message);
 	}
-	else
+	else //Channel already exist
 	{
 		// If channel is invite-only, only users that received an invite from operator can join
 		
-		// TODO create a function to check if the user is in the list of invitedUsers of the channel
-		if (it->invite_only == true)  // && user is in list of invited users (create function)
+		if (it->invite_only == false || (it->invite_only == true && userReceivedInvite(*it, user_name)))  // && user is not in list of invited users (create function)
 		{
+			// Add user to existing channel
+			it->addUser(user_name);
+			message = user_name + " has joined the channel " + channel_name;
+			//TODO send to all clients in channel
+			
+		}
+		else
+		{
+			client_message(irc, i, "JOIN", message);
 			message = channel_name + " :Cannot join channel (+i)";
 			send_error_message(irc, i, "473", message, irc.client[i].client_sock);
 			return;	
 		}
-		// Add user to existing channel
-		it->addUser(user_name);
 		
-		
-		message = user_name + " has joined the channel " + channel_name;
-		client_message(irc, i, "JOIN", message);
-		
-		//TODO send to all clients in channel
 	}
 
 	// Send notification to client

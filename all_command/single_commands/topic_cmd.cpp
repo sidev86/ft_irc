@@ -1,5 +1,21 @@
 #include "../../header/ft_irc.hpp"
 
+void set_view_topic(ft_irc& irc, int i, Channel& channel, const std::string new_topic)
+{
+	std::string message;
+	if (!new_topic.empty())
+	{
+		channel._topic = new_topic;
+		message = "Topic of the channel modified. New topic => " + channel._topic;
+		client_message(irc, i, "TOPIC", message);
+	}
+	else
+	{
+		message = "Topic of the channel => " + channel._topic;
+		client_message(irc, i, "TOPIC", message);
+	}
+}
+
 
 void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& new_topic)
 {
@@ -22,25 +38,23 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 	//Channel found
 	
 	// If user is not operator -> cannot change topic
-	//TODO add a control to check if the topic is changeable
-	if (!new_topic.empty() && !isOperator(oper_name, it->operatorUsers)) 
+	if (!it->topic_all_users)
 	{
-		send_error_message(irc, i, "482", ":You're not channel operator.", irc.client[i].client_sock);
-		return;
+		if (!new_topic.empty() && !isOperator(oper_name, it->operatorUsers))
+		{
+			send_error_message(irc, i, "482", ":You're not channel operator.", irc.client[i].client_sock);
+			return;
+		}
+		else
+		{
+			set_view_topic(irc, i, *it, new_topic);	
+		}
 	}
-	// Change the topic
-	else if (!new_topic.empty() && isOperator(oper_name, it->operatorUsers))
-	{
-		it->_topic = new_topic;
-		message = "Topic of the channel modified. New topic => " + it->_topic;
-		client_message(irc, i, "TOPIC", message);
-	}	
-	// View the current topic
 	else
 	{
-		message = "Topic of the channel => " + it->_topic;
-		client_message(irc, i, "TOPIC", message);
+		set_view_topic(irc, i, *it, new_topic);	
 	}
+	
 		
 }
 

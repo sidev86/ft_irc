@@ -92,7 +92,7 @@ void    nick_command(ft_irc &irc, int i);
 //COMMANDS
 void	kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& user_name);
 void	topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& new_topic);
-void	invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name);
+void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& nick_name, const std::string& channel_name);
 void	join_command(ft_irc& irc, int i, const std::string& channel_name, const std::string& user_name);
 void	mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string option, const std::string& option_param);
 
@@ -109,5 +109,6 @@ int	check_number_of_arguments(std::string command);
 int	nick_exist(std::vector<client_info>& clients, const std::string& nickname);
 int	get_user_index(std::vector<client_info>& clients, const std::string& nickname);
 bool	isOperator(const std::string& oper_name, std::vector<client_info>& operatorUsers);
+bool	userReceivedInvite(Channel& channel, const std::string& username);
 
 #endif

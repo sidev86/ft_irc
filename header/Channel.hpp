@@ -26,7 +26,7 @@ class Channel
 	    //MODES
 	    bool invite_only;
 	    bool has_password;
-	    bool topic_settable;
+	    bool topic_all_users;
 	    bool users_limit;
 	    bool has_key;
 	    

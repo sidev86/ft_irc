@@ -56,6 +56,17 @@ int get_user_index(std::vector<client_info>& clients, const std::string& nicknam
 }
 
 
+bool userReceivedInvite(Channel& channel, const std::string& username)
+{
+	for (std::vector<client_info>::iterator it = channel.invitedUsers.begin(); it != channel.invitedUsers.end(); ++it)
+	{
+		if (it->user == username)
+		 return 1;
+	}
+	return 0;
+}
+
+
 void sendToAll(std::vector<client_info>& users, const std::string& message) 
 {
    std::cout << "message to send to all => " << message << std::endl;
