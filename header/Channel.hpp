@@ -18,7 +18,7 @@ class Channel
 	    std::string _name;
 	    std::string _topic;
 	    std::string _key;
-	    unsigned int _num_users;
+	    int _num_users;
 	    int _max_users;
 	    std::vector<client_info> users; // Usa client_info qui
 	    std::vector<client_info> operatorUsers;

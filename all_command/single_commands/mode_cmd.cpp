@@ -57,8 +57,11 @@ void set_key_mode(const std::string& option, Channel& channel, const std::string
 	}
 	else if (option[0] == '+')
 	{
-		channel.has_key = true;
-		channel._key = key;
+		if (!key.empty())
+		{
+			channel.has_key = true;
+			channel._key = key;
+		}
 	}
 }
 

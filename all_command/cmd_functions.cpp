@@ -67,6 +67,17 @@ bool userReceivedInvite(Channel& channel, const std::string& username)
 }
 
 
+
+bool userAlreadyInChannel(Channel& channel, const std::string& username)
+{
+	for (std::vector<client_info>::iterator it = channel.users.begin(); it != channel.users.end(); ++it)
+	{
+		if (it->user == username)
+		 return 1;
+	}
+	return 0;
+}
+
 void sendToAll(std::vector<client_info>& users, const std::string& message) 
 {
    std::cout << "message to send to all => " << message << std::endl;

@@ -22,13 +22,20 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 	std::string message;
 	std::vector<client_info>::iterator oper_it;
 	
-	
 	// Find channel
 	std::vector<Channel>::iterator it = findChannel(channel_name, irc.channels);
 	
 	// Find user in channel
 	if (it != irc.channels.end())
+	{
 		oper_it = findUserInChannel(oper_name, it->users);
+		if (oper_it == it->users.end())
+		{
+			irc.msg = channel_name + " :You’re not on that channel";
+			send_error_message(irc, i, "442", irc.msg, irc.client[i].client_sock);
+			return;
+		}
+	}		
 	else
 	{
 		send_error_message(irc, i, "403", ":No such channel.", irc.client[i].client_sock);
@@ -53,8 +60,7 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 	else
 	{
 		set_view_topic(irc, i, *it, new_topic);	
-	}
-	
+	}	
 		
 }
 
