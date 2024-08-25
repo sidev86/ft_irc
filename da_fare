@@ -1,5 +1,25 @@
-cosa fa fare:
+***TASKS***
+
 SAMU) gestione piu client, gestione nickname mutlipli uguali.
-ROSTIC) gestione messaggi parziali chiusi con segniali ctrl+C e ctrl+D e ctrl+Z, gestione comandi client.
+ROSTIK) gestione messaggi parziali chiusi con segniali ctrl+C e ctrl+D e ctrl+Z, gestione comandi client.
 SAMIR) gestione comandi operator(Flags).
 studiare e fare i numeric
+
+
+25/08/24
+
+TODO
+- Creazione della funzione per invio messaggio a tutti gli user del channel
+- Comando PART
+
+TODO/FIX
+- Se un utente viene kickato o esce dal channel, rimuoverlo dalla lista degli operatori se è un operatore
+- Quando un utente viene invitato in un channel ed entra, rimuoverlo dalla lista degli user invitati.
+
+DUBBI
+- Un utente può auto-kickarsi dal canale?
+- Un utente può auto-rimuovere i propri privilegi di operator?
+- E' possibile che in un canale non siano più presenti operator?
+
+
+
