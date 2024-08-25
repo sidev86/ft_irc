@@ -65,6 +65,28 @@ void set_key_mode(const std::string& option, Channel& channel, const std::string
 	}
 }
 
+
+int set_operator_mode(const std::string& option, Channel& channel, const std::string user)
+{
+	std::vector<client_info>::iterator user_it; 
+	
+	if (option[0] == '+')
+	{
+		user_it = findUserInChannel(user, channel.users);
+		if (user_it == channel.users.end()) 
+			return 0;
+		channel.operatorUsers.push_back(*user_it); 
+	}
+	else if (option[0] == '-')
+	{
+		user_it = findUserInChannel(user, channel.operatorUsers);
+		if (user_it == channel.operatorUsers.end()) 
+			return 0;
+		channel.operatorUsers.erase(user_it);	
+	}
+	return 1;
+}
+
 void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string option, const std::string& option_param)
 {
 	std::string message;
@@ -102,9 +124,8 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 		set_users_limit_mode(option, *ch_iter, option_param);
 	else if (option[1] == 'k')
 		set_key_mode(option, *ch_iter, option_param);
-	
-	
-	
-
+	else if (option[1] == 'o')
+		if (!set_operator_mode(option, *ch_iter, option_param))
+			send_error_message(irc, i, "401", ":No such nick.", irc.client[i].client_sock);
 
 }
