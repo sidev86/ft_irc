@@ -35,6 +35,7 @@ class Channel
 	    void addUser(const std::string& username);
 	    void addOperatorUser(const std::string& oper_name);
 	    void removeUser(const std::string& username);
+	    void removeOperator(const std::string& oper);
 };
 
 #endif

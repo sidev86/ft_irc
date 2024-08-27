@@ -44,6 +44,19 @@ void Channel::removeUser(const std::string& username)
     }
 }
 
+void Channel::removeOperator(const std::string& oper)
+{
+    for (std::vector<client_info>::iterator it = operatorUsers.begin(); it != operatorUsers.end(); ++it)
+    {
+        if (it->user == oper)
+        {
+            operatorUsers.erase(it);
+            break;
+        }
+    }
+}
+
+
 
 bool Channel::channelHasName(const std::string& name) const 
 {

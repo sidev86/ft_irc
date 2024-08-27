@@ -7,7 +7,7 @@ void    commands(ft_irc &irc, int i)
         quit_command(irc, i);
     else if (first_command(irc) == "KICK" || first_command(irc) == "TOPIC" || first_command(irc) == "INVITE" || first_command(irc) == "MODE")
     	operator_command(irc, i);
-    else if (first_command(irc) == "JOIN")
+    else if (first_command(irc) == "JOIN" || first_command(irc) == "PART")
     	channel_command(irc, i);
     else
         send_error_message(irc, i, "421", message, irc.client[i].client_sock);

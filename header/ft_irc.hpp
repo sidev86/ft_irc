@@ -96,6 +96,7 @@ void	topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 void	invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& nick_name, const std::string& channel_name);
 void	join_command(ft_irc& irc, int i, const std::string& channel_name, const std::string& user_name, const std::string& key);
 void	mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string option, const std::string& option_param);
+void	part_command(ft_irc& irc, int i, const std::string& user_name, const std::string& channel_name);
 
 //OPERATOR FUNCTIONS
 std::vector<Channel>::iterator	findChannel(const std::string& channel_name, std::vector<Channel>& channels);
