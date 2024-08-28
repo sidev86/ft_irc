@@ -15,6 +15,8 @@ void join_to_channel(ft_irc& irc, Channel& channel, const std::string& user_name
 	if (!userAlreadyInChannel(channel, user_name))
 	{
 		//channel.addUser(user_name);
+		if (userReceivedInvite(channel, user_name))
+			channel.removeInvited(user_name);
 		irc.msg = user_name + " has joined the channel " + channel._name;
 	}
 }

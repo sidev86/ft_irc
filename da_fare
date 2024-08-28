@@ -20,6 +20,7 @@ DUBBI
 - Un utente può auto-kickarsi dal canale?
 - Un utente può auto-rimuovere i propri privilegi di operator?
 - E' possibile che in un canale non siano più presenti operator?
+- E' possibile visualizzare il topic di un canale alla quale non si ha accesso?
 
 
 

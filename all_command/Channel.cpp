@@ -56,6 +56,18 @@ void Channel::removeOperator(const std::string& oper)
     }
 }
 
+void Channel::removeInvited(const std::string& invited)
+{
+    for (std::vector<client_info>::iterator it = invitedUsers.begin(); it != invitedUsers.end(); ++it)
+    {
+        if (it->user == invited)
+        {
+            invitedUsers.erase(it);
+            break;
+        }
+    }
+}
+
 
 
 bool Channel::channelHasName(const std::string& name) const 
