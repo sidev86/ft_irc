@@ -10,7 +10,7 @@ studiare e fare i numeric
 
 TODO
 - Creazione della funzione per invio messaggio a tutti gli user del channel
-- Comando PART
+- Comando PART(done)
 
 TODO/FIX
 - Se un utente viene kickato o esce dal channel, rimuoverlo dalla lista degli operatori se è un operatore
@@ -20,7 +20,32 @@ DUBBI
 - Un utente può auto-kickarsi dal canale?
 - Un utente può auto-rimuovere i propri privilegi di operator?
 - E' possibile che in un canale non siano più presenti operator?
-- E' possibile visualizzare il topic di un canale alla quale non si ha accesso?
+- E' possibile visualizzare il topic di un canale alla quale non si ha accesso? => NO
+
+
+29/08/24
+
+**TODO**
+
+JOIN -> Ingresso in channel
+332: mostra topic (se è presente)
+366: endof NAMES list
+
+TOPIC #nome_canale
+331: no topic is set (se topic vuoto)
+TOPIC #nome_canale topic
+messaggio a tutti gli user del canale -> nuovo topic 
+
+MODE #nome canale +/-flag
+messaggio a tutti gli user del canale sulla nuova modalità del canale
+
+INVITE nickname #nome_channel
+341: su terminale dell'utente che ha inviato l'invito
+messaggio d'invito a user
+
+-Cambiare logica del join di modo che se un channel ha la chiave impostata e un utente riceve l'invito al canale bypassa l'inserimento della key per entrare
+	
+
 
 
 

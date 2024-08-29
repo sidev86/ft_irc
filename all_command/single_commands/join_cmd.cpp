@@ -17,6 +17,7 @@ void join_to_channel(ft_irc& irc, Channel& channel, const std::string& user_name
 		//channel.addUser(user_name);
 		if (userReceivedInvite(channel, user_name))
 			channel.removeInvited(user_name);
+		
 		irc.msg = user_name + " has joined the channel " + channel._name;
 	}
 }
@@ -110,6 +111,15 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 		it->addUser(user_name);
 		irc.msg = "Welcome to the channel " + channel_name;
 		client_message(irc, i, "JOIN", irc.msg);
+		
+		std::cout << "\n**CHANNEL USERS**\n" << std::endl;
+		
+		for (std::vector<client_info>::iterator u_it = it->users.begin(); u_it != it->users.end(); ++u_it)
+		{
+			
+			std::cout << u_it->user << std::endl;
+			
+		}
 	}
 	irc.msg = "";
 	
