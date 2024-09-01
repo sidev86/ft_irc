@@ -12,11 +12,11 @@ std::vector<Channel>::iterator findChannel(const std::string& channel_name, std:
 }	
 	
 	
-std::vector<client_info>::iterator findUserInChannel(const std::string& user_name, std::vector<client_info>& users) 
+std::vector<client_info>::iterator findUserInChannel(const std::string& nick, std::vector<client_info>& users) 
 {
     for (std::vector<client_info>::iterator it = users.begin(); it != users.end(); ++it) 
     {
-        if (it->clientHasName(user_name))
+        if (it->clientHasName(nick))
             return it; 
     }
     return users.end();
@@ -42,7 +42,6 @@ int nick_exist(std::vector<client_info>& clients, const std::string& nickname)
 	return 0;
 }
 
-
 int get_user_index(std::vector<client_info>& clients, const std::string& nickname)
 {
 	int i = 0;
@@ -55,24 +54,21 @@ int get_user_index(std::vector<client_info>& clients, const std::string& nicknam
 	return -1;
 }
 
-
-bool userReceivedInvite(Channel& channel, const std::string& username)
+bool userReceivedInvite(Channel& channel, const std::string& nick)
 {
 	for (std::vector<client_info>::iterator it = channel.invitedUsers.begin(); it != channel.invitedUsers.end(); ++it)
 	{
-		if (it->user == username)
+		if (it->nick == nick)
 		 return 1;
 	}
 	return 0;
 }
 
-
-
-bool userAlreadyInChannel(Channel& channel, const std::string& username)
+bool userAlreadyInChannel(Channel& channel, const std::string& nick)
 {
 	for (std::vector<client_info>::iterator it = channel.users.begin(); it != channel.users.end(); ++it)
 	{
-		if (it->user == username)
+		if (it->nick == nick)
 		 return 1;
 	}
 	return 0;
@@ -90,15 +86,3 @@ void sendToAll(std::vector<client_info>& users, const std::string& message)
         }
     }
 }
-
-void sendToClient(client_info& client, const std::string& message)
-{
-	std::cout << "message to send => " << message << std::endl;
-	if (client.authenticated) 
-        {
-            if (send(client.client_sock, message.c_str(), message.size(), 0) == -1) 
-                std::cerr << "Error in send notification message to user with socket fd " << client.client_sock << std::endl;
-        }
-}
-
-

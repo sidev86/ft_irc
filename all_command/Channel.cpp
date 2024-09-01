@@ -16,26 +16,62 @@ Channel::Channel(std::string name)
 }
 Channel::~Channel() {}
 
-void Channel::addUser(const std::string& username) 
+Channel::Channel() {}
+
+void Channel::addUser(ft_irc &irc, int i)
 {
     client_info newClient;
-    newClient.user = username;
+    newClient.user = irc.client[i].user;
+    newClient.nick = irc.client[i].nick;
+    newClient.realname = irc.client[i].realname;
+    newClient.host = irc.client[i].host;
+    newClient.server = irc.client[i].server;
+    newClient.client_addr = irc.client[i].client_addr;
+    newClient.client_sock = irc.client[i].client_sock;
+    newClient.client_len = irc.client[i].client_len;
+
     users.push_back(newClient);
     _num_users++;
 }
 
-void Channel::addOperatorUser(const std::string& oper_name)
+void Channel::DeleteUserFromChannel(ft_irc& irc, int i)
+{
+    std::string nick = irc.client[i].nick;
+
+    // Rimuovi l'utente da users
+    for (std::vector<client_info>::iterator it = users.begin(); it != users.end(); ++it)
+    {
+        if (it->nick == nick)
+        {
+            removeUser(nick);
+            break;
+        }
+    }
+
+    // Rimuovi l'utente da operatorUsers
+    for (std::vector<client_info>::iterator it = operatorUsers.begin(); it != operatorUsers.end(); ++it)
+    {
+        if (it->nick == nick)
+        {
+            removeOperator(nick);
+            break;
+        }
+    }
+}
+
+void Channel::addOperatorUser(const std::string& oper_name, const std::string& nick)
 {
     client_info newOperator;
     newOperator.user = oper_name;
+    newOperator.nick = nick;
     operatorUsers.push_back(newOperator);
 }
 
-void Channel::removeUser(const std::string& username)
+void Channel::removeUser(const std::string& nick)
 {
     for (std::vector<client_info>::iterator it = users.begin(); it != users.end(); ++it)
     {
-        if (it->user == username)
+        if (it->nick == nick)
         {
             users.erase(it);
             _num_users--;
@@ -51,6 +87,7 @@ void Channel::removeOperator(const std::string& oper)
         if (it->user == oper)
         {
             operatorUsers.erase(it);
+            _num_users--;
             break;
         }
     }
@@ -67,8 +104,6 @@ void Channel::removeInvited(const std::string& invited)
         }
     }
 }
-
-
 
 bool Channel::channelHasName(const std::string& name) const 
 {

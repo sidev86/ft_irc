@@ -2,9 +2,12 @@
 
 void client_message(ft_irc &irc, int i, const std::string &command, const std::string &ex_message)
 {
-    std::string message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
-    if (!ex_message.empty())
-        message = message + " " + ex_message;
+    std::string message;
+    if (command.empty())
+        message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
+    else
+        message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
+    message = message + " " + ex_message;
     message = message + "\r\n";
     send(irc.client[i].client_sock, message.c_str(), message.length(), 0);
 }

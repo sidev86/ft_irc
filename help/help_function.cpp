@@ -1,17 +1,21 @@
 #include "../header/ft_irc.hpp"
 
-void init_poll(ft_irc &irc)
+std::string extract_message(const std::string &buffer)
 {
-    struct pollfd pfd; //creo struct pollfd la inizializzo e la inserico nel vettore
-    pfd.fd = irc.server.server_sock; //definisco socket pfd
-    pfd.events = POLLIN; //permetto l'ascolto degli eventi
-    pfd.revents = 0; //indica che per ora non sono accaduti eventi
-    irc.p_fds.push_back(pfd); //inserisco pfd nel vettore
+    size_t pos = buffer.find(':');
+    if (pos != std::string::npos) {
+        return buffer.substr(pos + 1);
+    }
+    return "";
 }
 
-void    colored_message(const std::string message, const std::string color)
+void init_poll(ft_irc &irc, int &sock)
 {
-    std::cout << color << message << RESET <<std::endl;
+    struct pollfd pfd; //creo struct pollfd
+    pfd.fd = sock; //associo il socket a fd cosi che pfd lo monitori
+    pfd.events = POLLIN; //permetto l'ascolto degli eventi
+    pfd.revents = 0; //definisce che pfd dovra monitorare i dati inviati
+    irc.p_fds.push_back(pfd); //inserisco pfd nel vettore
 }
 
 bool enough_elements(const std::string &input)
@@ -34,29 +38,18 @@ bool    check_info(ft_irc irc, int i)
     return (enough_elements(irc.client[i].nick) && enough_elements(irc.client[i].user));
 }
 
-std::string first_command(ft_irc irc)
+std::string trim(const std::string& str)
 {
-    std::string command;
-    std::stringstream ss(irc.buffer);
-    ss >> command;
-    return (command);
-}
+    // Trova la prima posizione di un carattere non spazio
+    size_t start = str.find_first_not_of(' ');
+    // Trova l'ultima posizione di un carattere non spazio
+    size_t end = str.find_last_not_of(' ');
 
-std::string second_command(ft_irc irc)
-{
-    std::string first_word;
-    std::stringstream ss(irc.buffer);
+    // Se la stringa è tutta spazi o vuota, ritorna una stringa vuota
+    if (start == std::string::npos) {
+        return "";
+    }
 
-    ss >> first_word;
-
-    std::string rest_of_command;
-    std::getline(ss, rest_of_command);
-
-    if (!rest_of_command.empty() && rest_of_command[0] == ' ')
-        rest_of_command.erase(0, 1);
-    if (rest_of_command.empty())
-        return ("no");
-    if (!rest_of_command.empty() && rest_of_command[0] == ':')
-        rest_of_command.erase(0, 1);
-    return rest_of_command;
+    // Ritorna la sottostringa tra 'start' e 'end'
+    return str.substr(start, end - start + 1);
 }

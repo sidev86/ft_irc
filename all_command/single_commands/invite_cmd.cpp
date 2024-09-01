@@ -1,6 +1,10 @@
 #include "../../header/ft_irc.hpp"
 
-
+/*
+posso invitare un utente gia dentro un canale invite-only    
+        ERR_USERONCHANNEL
+       RPL_INVITING                    RPL_AWAY              RPL_AWAY
+*/
 void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& nick_name, const std::string& channel_name)
 {
 	std::string message;
@@ -40,7 +44,6 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 		return;
 	}
 	
-	
 	// Get the index of the user invited and send a message to him
 	i = get_user_index(irc.client, nick_name);
 	if (i != -1)
@@ -49,8 +52,6 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 		
 		ch_iter->invitedUsers.push_back(irc.client[i]);
 		message =  oper_name + " invited you to join " + channel_name + " channel.";
-		client_message(irc, i, "INVITE", message);
-		
+		client_message(irc, i, "INVITE", message);	
 	}
-
 }

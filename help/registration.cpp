@@ -27,15 +27,7 @@ int is_valid_hostname(const std::string &str)
 
 int check_realname(ft_irc &irc, int i, std::string &error_msg)
 {
-    int j = 2;
-    while (irc.client[i].realname[j] != '\0' && irc.client[i].realname[j] == ' ')
-        j++;
-    if (irc.client[i].realname[j] != '\0' && irc.client[i].realname[j] != ' ' && j > 2)
-    {
-        send_error_message(irc, i, "461", error_msg, irc.client[i].client_sock);
-        return (1);
-    }
-    if (irc.client[i].realname[1] != ':')
+    if (irc.client[i].realname[0] != ':')
     {
         send_error_message(irc, i, "461", error_msg, irc.client[i].client_sock);
         return (1);
@@ -50,30 +42,26 @@ int handle_user(ft_irc &irc, int i)
     std::stringstream ss(second_command(irc));
     ss >> irc.client[i].user >> irc.client[i].host >> irc.client[i].server;
     std::getline(ss, irc.client[i].realname);
+    irc.client[i].realname = trim(irc.client[i].realname);
+    irc.client[i].host = trim(irc.client[i].host);
+    irc.client[i].server = trim(irc.client[i].server);
+    irc.client[i].user = trim(irc.client[i].user);
     if (irc.client[i].user.empty() || irc.client[i].server.empty() || irc.client[i].host.empty() || irc.client[i].realname.empty())
     {
-        irc.client[i].nick = "";
-        irc.client[i].server = "";
         send_error_message(irc, i, "461", error_msg, irc.client[i].client_sock);
         return (1);
     }
     if (check_realname(irc, i, error_msg) == 1)
     {
-        irc.client[i].nick = "";
-        irc.client[i].server = "";
         return (1);
     }
     if (irc.client[i].host.length() > 253 || is_valid_hostname(irc.client[i].host) == 1)
     {
-        irc.client[i].nick = "";
-        irc.client[i].server = "";
         send_error_message(irc, i, "461", error_msg, irc.client[i].client_sock);
         return (1);
     }
     if (is_valid_hostname(irc.client[i].server) == 1)
     {
-        irc.client[i].nick = "";
-        irc.client[i].server = "";
         send_error_message(irc, i, "461", error_msg, irc.client[i].client_sock);
         return (1);
     }
@@ -117,7 +105,7 @@ int cont_check_nick(ft_irc &irc, int i, const std::string &nick)
 
 int check_nick(const std::string &nick, ft_irc &irc, int i)
 {
-    if (second_command(irc) == "no")
+    if (nick.empty())
     {
         send_error_message(irc, i, "431", ": no nickname given", irc.client[i].client_sock);
         return (1);
@@ -142,12 +130,13 @@ int check_nick(const std::string &nick, ft_irc &irc, int i)
 void    process_pass_command(ft_irc &irc, int i)
 {
     //non inserisco la password
-    if (second_command(irc) == "no")
+    std::string pass = trim(second_command(irc));
+    if (pass.empty())
     {
         std::string message = first_command(irc) + " : Not enough parameters";
         send_error_message(irc, i, "461", message, irc.client[i].client_sock);
     }
-    else if (second_command(irc) == irc.pass_server)
+    else if (pass == irc.pass_server)
         irc.client[i].is_pass = true;
     else
         send_error_message(irc, i, "464", ": Password incorrect", irc.client[i].client_sock);
@@ -166,11 +155,12 @@ int user_command(ft_irc &irc, int i)
 
 void nick_command(ft_irc &irc, int i)
 {
-    int u_nick = check_nick(second_command(irc), irc, i);
+    std::string nick = trim(second_command(irc));
+    int u_nick = check_nick(nick, irc, i);
     if (u_nick == 0 && irc.client[i].is_pass == true && \
     (irc.client[i].is_nick == false || irc.client[i].is_nick == true))
     {
-        irc.client[i].nick = second_command(irc);
+        irc.client[i].nick = nick;
         return ;
     }
 }

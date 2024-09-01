@@ -1,6 +1,15 @@
 #include "../../header/ft_irc.hpp"
 
-
+/*
+ERR_CHANOPRIVSNEEDED
+JOIN #Saas
+:s2!s@s JOIN Welcome to the channel #Saas
+KICK #Saas samu12 : gay
+:s 461 s2 :Not enough parameters.
+KICK #Saas samu12 :gay
+:s 441 s2 :They're not on that channel.
+il commento puo essere ance piu lungo di una parola
+*/
 	
 void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& user_name) 
 {	
@@ -42,5 +51,4 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	// Remove user from list of user and in case from operator users if user is an operator
 	ch_iter->removeUser(user_name);
 	ch_iter->removeOperator(user_name);
-	
 }

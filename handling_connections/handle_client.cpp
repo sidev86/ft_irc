@@ -3,16 +3,21 @@
 // Funzione per leggere i dati in arrivo dal socket e processarli
 int process_incoming_data(ft_irc &irc, int i)
 {
+        // Ignora i dati in arrivo se il server è sospeso
+    if (irc.server_suspended)
+        return 0;
     //legge dati del client
     ssize_t bytes = recv(irc.p_fds[i].fd, irc.buffer, sizeof(irc.buffer) -1, 0);
     if (bytes <= 0)
     {
-        if (bytes < 0)
-            perror("recv");
         close(irc.p_fds[i].fd); //chiude connession
         irc.p_fds.erase(irc.p_fds.begin() + i); //rimuobe l'fd monitorato da poll
         irc.client.erase(irc.client.begin() + i); //rimuove il client dal vettore
-        std::cout << "🚨Error: \n(connection closed)🚨" << std::endl;
+        if (bytes < 0)
+        {
+            perror("recv");
+            std::cout << "🚨Error: \n(connection closed)🚨" << std::endl;
+        }
         return 1;
     }
     irc.buffer[bytes] = '\0';
@@ -63,12 +68,16 @@ int set_sock(ft_irc &irc,int i)
 
 int pfd_connections(ft_irc &irc)
 {
-    for (size_t i = 0; i < irc.p_fds.size();)
+    size_t i = 0;
+    while (i < irc.p_fds.size())
     {
-        //controlla se l'utente invia messaggi
+        if (irc.server_suspended)
+        {
+            i++;
+            continue;
+        }
         if (irc.p_fds[i].revents & POLLIN)
         {
-            //se fds[i] == server_sock, nuovo client accettazione connessione
             if (irc.p_fds[i].fd == irc.server.server_sock)
             {
                 if (accept_connections(irc) == 1)
@@ -94,9 +103,17 @@ int pfd_connections(ft_irc &irc)
 // Funzione per eseguire il poll e gestire gli eventi in arrivo
 int poll_and_handle(ft_irc &irc)
 {
+    int result = 0;
+    // Se il server è sospeso, non eseguire il polling
+    if (irc.server_suspended)
+        return 0;
     memset(irc.buffer, 0, sizeof(irc.buffer)); //inizializza il buffer a 0
     //faccio si che pool monitori tutti gli fd all'infinito
-    int result = poll(irc.p_fds.data(), irc.p_fds.size(), -1);
+    do
+    {
+        result = poll(irc.p_fds.data(), irc.p_fds.size(), -1);
+    } 
+    while (result < 0 && errno == EINTR); // Gestisce l'errore EINTR
     if (result < 0)
     {
         colored_message("🚨Error: \n(poll failed)🚨", RED);
@@ -111,6 +128,9 @@ int poll_and_handle(ft_irc &irc)
 // Funzione principale per gestire il client
 int handle_client(ft_irc &irc)
 {
+    // Verifica se il server è sospeso
+    if (irc.server_suspended)
+        return 0;
     if (poll_and_handle(irc) == 1)
         return 1;
     else

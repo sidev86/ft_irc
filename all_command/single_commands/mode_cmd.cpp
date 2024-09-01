@@ -1,6 +1,13 @@
 #include "../../header/ft_irc.hpp"
 
-
+/*           ERR_NEEDMOREPARAMS              RPL_CHANNELMODEIS
+           ERR_CHANOPRIVSNEEDED            ERR_NOSUCHNICK
+           ERR_NOTONCHANNEL                ERR_KEYSET
+           RPL_BANLIST                     RPL_ENDOFBANLIST
+           ERR_UNKNOWNMODE                 ERR_NOSUCHCHANNEL
+           ERR_USERSDONTMATCH              RPL_UMODEIS
+           ERR_UMODEUNKNOWNFLAG
+*/
 int valid_option(const std::string& option)
 {
 	if (option[0] == '-' || option[0]  == '+')
@@ -127,5 +134,4 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	else if (option[1] == 'o')
 		if (!set_operator_mode(option, *ch_iter, option_param))
 			send_error_message(irc, i, "401", ":No such nick.", irc.client[i].client_sock);
-
 }

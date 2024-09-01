@@ -1,5 +1,10 @@
 #include "header/ft_irc.hpp"
 
+/*
+flag obbligatorie(i, t, k, o, l)
+*/
+ft_irc global_irc;
+
 bool valid_port(const std::string &s, ft_irc &irc)
 {
     int num = std::atoi(s.c_str());
@@ -78,16 +83,19 @@ bool valid_password(const std::string &s, ft_irc &irc)
 
 int main(int c, char **v)
 {
-    ft_irc irc;
+    global_irc.server_suspended = false;
+    global_irc.server_running = true;
     if (c != 3)
     {
         colored_message("🚨Error: \n(not valid number of arguments)🚨", RED);
         return (1);
     }
-    if (valid_port(v[1], irc) == false)
+    signal(SIGTSTP, handle_sigtstp);
+    signal(SIGINT, handle_termination);
+    if (valid_port(v[1], global_irc) == false)
         return (1);
-    if (valid_password(v[2], irc) == false)
+    if (valid_password(v[2], global_irc) == false)
         return (1);
-    if (handle_server(irc) == 1)
+    if (handle_server(global_irc) == 1)
         return (1);
 }

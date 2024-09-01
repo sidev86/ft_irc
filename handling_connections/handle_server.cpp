@@ -77,19 +77,11 @@ int start_listening(int sockfd)
 
 int non_blocking_server(int sockfd)
 {
-    int flags = fcntl(sockfd, F_GETFL, 0); //setti una flag per il socket da usare dopo
-    if (flags < 0)
-    {
-        colored_message("🚨Error: \n(fcntl failed)🚨", RED);
-        perror("fcntl");
-        close(sockfd);
-        return 1;
-    }
-    /*
-    socket non bloccante con piu client
-    per esempio con ctrl+c ctrl-z ctrl-d il server non si ferma
-    */
-    if (fcntl(sockfd, F_SETFL, flags | O_NONBLOCK) < 0) //imposta il socket come non bloccante
+/*
+socket non bloccante con piu client
+per esempio con ctrl+c ctrl-z ctrl-d il server non si ferma
+*/
+    if (fcntl(sockfd, F_SETFL, O_NONBLOCK) < 0)
     {
         std::cerr << "🚨Error: \n(fcntl F_SETFL failed)🚨" << std::endl;
         perror("fcntl");
@@ -103,9 +95,9 @@ int handle_server(ft_irc &irc)
 {
     if (create_socket(irc.server.server_sock) == 1)
         return 1;
-    if (non_blocking_server(irc.server.server_sock) == 1)
-        return 1;
     if (set_reuse_address(irc.server.server_sock) == 1)
+        return 1;
+    if (non_blocking_server(irc.server.server_sock) == 1)
         return 1;
     initialize_address(irc.server.server_addr, irc.port);
     if (bind_socket(irc.server.server_sock, irc.server.server_addr) == 1)
@@ -114,11 +106,19 @@ int handle_server(ft_irc &irc)
         return 1;
     colored_message("Server: listening on port " + irc.port, YELLOW);
     init_poll(irc, irc.server.server_sock);
-    while (1)
+    while (irc.server_running)
     {
+        // Controlla se il server è sospeso
+        if (irc.server_suspended)
+        {
+            // Attendi un po' prima di controllare di nuovo
+            sleep(1);
+            continue;
+        }
         if (handle_client(irc) == 1)
             break;
     }
-    close(irc.server.server_sock);
+    if (irc.server.server_sock != -1)
+        close(irc.server.server_sock);
     return 0;
 }
