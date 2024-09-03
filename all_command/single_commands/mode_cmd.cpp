@@ -35,9 +35,23 @@ void set_topic_mode(const std::string& option, Channel& channel)
 		channel.topic_all_users = true;
 }
 
-void set_users_limit_mode(const std::string& option, Channel& channel, const std::string& option_param)
+int param_is_numeric(const std::string& param)
+{
+	int i = 0;
+	
+	while(param[i] != '\0')
+	{
+		if (param[i] < '0' || param[i] > '9')
+			return 0;
+		i++;
+	}
+	return 1;
+}
+
+int set_users_limit_mode(const std::string& option, Channel& channel, const std::string& option_param)
 {
 	int num_users;
+	std::string message;
 	
 	if (option[0] == '-')
 	{
@@ -47,12 +61,14 @@ void set_users_limit_mode(const std::string& option, Channel& channel, const std
 	else if (option[0] == '+')
 	{
 		channel.users_limit = true;
+		
+		//Check if the parameter is numeric
+		if (!param_is_numeric(option_param))
+			return 0;
 		std::stringstream(option_param) >> num_users;
-		
-		//TODO check if the number is valid
-		
 		channel._max_users = num_users;
 	}
+	return 1;
 }
 
 void set_key_mode(const std::string& option, Channel& channel, const std::string& key)
@@ -97,7 +113,7 @@ int set_operator_mode(const std::string& option, Channel& channel, const std::st
 void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string option, const std::string& option_param)
 {
 	std::string message;
-	
+	unsigned long int t;
 	
 	// Find the channel
 	std::vector<Channel>::iterator ch_iter = findChannel(channel_name, irc.channels);
@@ -128,10 +144,25 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	else if (option[1] == 't')
 		set_topic_mode(option, *ch_iter);
 	else if (option[1] == 'l')
-		set_users_limit_mode(option, *ch_iter, option_param);
+	{
+		if (!set_users_limit_mode(option, *ch_iter, option_param))
+		{
+			message = option + " :is unknown mode char to me (Invalid parameter value).";
+			send_error_message(irc, i, "472", message, irc.client[i].client_sock);
+			return;
+		}
+	}
 	else if (option[1] == 'k')
 		set_key_mode(option, *ch_iter, option_param);
 	else if (option[1] == 'o')
+	{
 		if (!set_operator_mode(option, *ch_iter, option_param))
+		{
 			send_error_message(irc, i, "401", ":No such nick.", irc.client[i].client_sock);
+			return;
+		}
+	}
+	message = ch_iter->_name + " " + option;
+	for (t = 0; t < ch_iter->users.size(); t++)
+		client_message(irc, t, "MODE", message);
 }
