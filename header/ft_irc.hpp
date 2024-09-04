@@ -45,6 +45,10 @@ class client_info
         {
             return nick == name;
         }
+        bool operator==(const client_info& other) const
+        {
+            return (nick == other.nick) && (client_sock == other.client_sock);
+        }
         int client_sock;
         struct sockaddr_in client_addr;
         socklen_t client_len;
@@ -96,7 +100,6 @@ void    handle_termination(int signal);
 void    handle_sigtstp(int signal);
 void	list_command(ft_irc& irc, int i);
 void	sendToAll(std::vector<client_info>& users, const std::string& message);
-void	sendToClient(client_info& client, const std::string& message);
 void	operator_command(ft_irc& irc, int i);
 void	channel_command(ft_irc& irc, int i);
 void	send_to_command_function(ft_irc& irc, int i);

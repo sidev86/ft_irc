@@ -18,9 +18,5 @@ std::string second_command(ft_irc irc)
     std::string rest_of_command;
     std::getline(ss, rest_of_command);
 
-    if (!rest_of_command.empty() && rest_of_command[0] == ' ')
-        rest_of_command.erase(0, 1);
-    if (!rest_of_command.empty() && rest_of_command[0] == ':')
-        rest_of_command.erase(0, 1);
     return rest_of_command;
 }

@@ -21,7 +21,7 @@ int process_incoming_data(ft_irc &irc, int i)
         return 1;
     }
     irc.buffer[bytes] = '\0';
-    if (first_command(irc) == "CAP" && second_command(irc) == "LS 302")
+    if (first_command(irc) == "CAP" && trim(second_command(irc)) == "LS 302")
         return 0;
     if (handle_command(irc, i) == 1)
         return 1;

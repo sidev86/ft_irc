@@ -1,19 +1,22 @@
 #include "../../header/ft_irc.hpp"
-
-/*
-RPL_TOPIC
-*/
-
 void set_view_topic(ft_irc& irc, int i, Channel& channel, const std::string new_topic)
 {
 	std::string message;
 	unsigned long int t;
 	
+	if (new_topic.empty())
+	{
+		channel._topic = "";
+		message = ":" + irc.client[i].server + " 331 " + irc.client[i].nick + " " + channel._name + " :No topic is set";
+		for (t = 0; t < channel.users.size(); t++)
+			client_message(irc, t, "TOPIC", message);
+		return ;
+	}
 	if (!new_topic.empty())
 		channel._topic = new_topic;
 	if (!channel._topic.empty())
 	{
-		message = channel._name + " " + channel._topic;
+		message = ":" + irc.client[i].server + " 332 " + irc.client[i].nick + " " + channel._name + " :" + channel._topic;
 		
 		if(!new_topic.empty())
 		{
@@ -29,9 +32,6 @@ void set_view_topic(ft_irc& irc, int i, Channel& channel, const std::string new_
 		client_message(irc, i, "", message);
 	}
 }
-
-
-
 
 void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& new_topic)
 {
@@ -68,11 +68,11 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 		}
 		else
 		{
-			set_view_topic(irc, i, *it, new_topic);
+			set_view_topic(irc, i, *it, new_topic);	
 		}
 	}
 	else
 	{
-		set_view_topic(irc, i, *it, new_topic);
+		set_view_topic(irc, i, *it, new_topic);	
 	}
 }

@@ -31,6 +31,7 @@ class Channel
 	    bool has_key;
 	    
 	    bool channelHasName(const std::string& name) const;
+		bool isMember(const client_info& user);
 
 	    void DeleteUserFromChannel(ft_irc& irc, int i);
 	    void addUser(ft_irc &irc, int i);

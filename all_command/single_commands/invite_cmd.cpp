@@ -3,7 +3,7 @@
 /*
 posso invitare un utente gia dentro un canale invite-only    
         ERR_USERONCHANNEL
-       RPL_INVITING                    RPL_AWAY              RPL_AWAY
+       RPL_INVITING
 */
 void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& nick_name, const std::string& channel_name)
 {

@@ -29,19 +29,9 @@ int	join_to_channel(ft_irc& irc, Channel& channel, const std::string& nick, int 
 void	reply_to_channel(ft_irc& irc, int i, std::vector<Channel>::iterator it)
 {
 	std::string message;
-	if (!it->_topic.empty())
-	{
-		message = it->_name + " " + it->_topic;
-		client_message(irc, i, "TOPIC", message);
-	}
-	else
-	{
-		message = ":" + irc.client[i].server + " 331 " + irc.client[i].nick + " " + it->_name + " :No topic is set";
-		client_message(irc, i, "", message);
-	}
-	message = ":" + irc.client[i].server + " 353 " + irc.client[i].nick  + " " + it->_name + " :";
 	std::string users_list;
 	
+	message = ":" + irc.client[i].server + " 353 " + irc.client[i].nick  + " = " + it->_name + " :";
 	for (std::vector<client_info>::iterator op_it = it->operatorUsers.begin(); op_it != it->operatorUsers.end(); ++op_it)
 		users_list += "@" + op_it->nick + " ";
 	std::vector<client_info>::iterator op_it = it->operatorUsers.begin();
@@ -67,6 +57,11 @@ void	reply_to_channel(ft_irc& irc, int i, std::vector<Channel>::iterator it)
 	message += users_list;
 	client_message(irc, i, "", message);
 	message = ":" + irc.client[i].server + " 366 " + irc.client[i].nick + " " + it->_name + " :End of /NAMES list";
+	client_message(irc, i, "", message);
+	if (it->_topic.empty())
+		message = ":" + irc.client[i].server + " 331 " + irc.client[i].nick + " " + it->_name + " :No topic is set";
+	else
+		message = ":" + irc.client[i].server + " 332 " + irc.client[i].nick + " " + it->_name + " :" + it->_topic;
 	client_message(irc, i, "", message);
 }
 
@@ -183,9 +178,7 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 	std::cout << "\n**CHANNEL USERS**\n" << std::endl;
 	for (std::vector<client_info>::iterator u_it = it->users.begin(); u_it != it->users.end(); ++u_it)
 	{
-
 		std::cout << u_it->user << std::endl;
-
 	}
     // TODO: Verifica il tipo di canale. Se è "invite-only", solo gli utenti invitati dall'operatore possono unirsi.
 }

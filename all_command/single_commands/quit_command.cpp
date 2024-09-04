@@ -16,11 +16,11 @@ void quit_command(ft_irc &irc, int i)
     std::string secondCmd = second_command(irc);
     if (secondCmd.empty())
         client_message(irc, i, "QUIT", "");
-    else
+/*  else
     {
         std::string message = trim(secondCmd);
         client_message(irc, i, "QUIT", message);
-    }
+    }*/
     close(irc.client[i].client_sock);
     for (std::vector<struct pollfd>::iterator it = irc.p_fds.begin(); it != irc.p_fds.end(); ++it)
     {

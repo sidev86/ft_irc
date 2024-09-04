@@ -4,7 +4,6 @@ void    commands(ft_irc &irc, int i)
 {
     std::string message = first_command(irc) + " :Unknown command";
     std::string target;
-    std::string msg;
     if (first_command(irc) == "QUIT")
         quit_command(irc, i);
     else if (first_command(irc) == "KICK" || first_command(irc) == "TOPIC" || first_command(irc) == "INVITE" || first_command(irc) == "MODE")
@@ -15,8 +14,7 @@ void    commands(ft_irc &irc, int i)
     	list_command(irc, i);
     else if (first_command(irc) == "PRIVMSG")
     {
-        target = second_command(irc);  // Estrai il target (utente o canale)
-        msg = extract_message(irc.buffer);  // Estrai il messaggio dal buffer
+        target = trim(second_command(irc));  // Estrai il target (utente o canale)
         privmsg_command(irc, i, target);
     }
     else

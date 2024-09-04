@@ -1,8 +1,9 @@
 #include "../../header/ft_irc.hpp"
 
-#include "../../header/ft_irc.hpp"
-
-
+/*
+ ERR_NEEDMOREPARAMS              ERR_NOSUCHCHANNEL
+           ERR_NOTONCHANNEL
+*/
 void part_command(ft_irc& irc, int i, const std::string& nick, const std::string& channel_name)
 {
 	std::string message;
