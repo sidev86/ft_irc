@@ -22,7 +22,7 @@ int check_number_of_arguments(std::string command)
 
 	while (ss >> word)
 		num_args++;
-	if (first_wd == "KICK" && is_comment(command) == 0)
+	if (first_wd == "KICK" && (num_args == 2 || (num_args == 3 && is_comment(command))))
 		return 1;
 	else if (first_wd == "TOPIC" && ((num_args > 1 && is_comment(command) == 0) || num_args == 1))
 		return 1;

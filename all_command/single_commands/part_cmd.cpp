@@ -36,4 +36,5 @@ void part_command(ft_irc& irc, int i, const std::string& nick, const std::string
 	// Remove user from list of user and in case from operator users if user is an operator
 	ch_iter->removeUser(nick);
 	ch_iter->removeOperator(nick);
+	ch_iter->removeInvited(nick);
 }

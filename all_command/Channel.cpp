@@ -84,7 +84,7 @@ void Channel::removeOperator(const std::string& oper)
 {
     for (std::vector<client_info>::iterator it = operatorUsers.begin(); it != operatorUsers.end(); ++it)
     {
-        if (it->user == oper)
+        if (it->nick == oper)
         {
             operatorUsers.erase(it);
             _num_users--;
@@ -97,7 +97,7 @@ void Channel::removeInvited(const std::string& invited)
 {
     for (std::vector<client_info>::iterator it = invitedUsers.begin(); it != invitedUsers.end(); ++it)
     {
-        if (it->user == invited)
+        if (it->nick == invited)
         {
             invitedUsers.erase(it);
             break;
