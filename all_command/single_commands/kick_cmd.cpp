@@ -11,7 +11,7 @@ KICK #Saas samu12 :gay
 il commento puo essere ance piu lungo di una parola
 */
 	
-void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name) 
+void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name, std::string& comment) 
 {	
 	//std::cout << oper_name << " " << channel_name << " " << nick_name << std::endl;
 	std::string message;
@@ -44,7 +44,12 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	}
 
 	// If channel exists send a message to all clients of the channel that the user leaved channel
-	message = "User " + nick_name + " has been kicked from channel.";
+	message = "User " + nick_name + " has been kicked from channel. ";
+	
+	// If there is comment print comment
+	if (!comment.empty())
+		message += comment;
+		
 	for (t = 0; t < ch_iter->users.size(); t++)
 		client_message(irc, t, "KICK", message);
 	

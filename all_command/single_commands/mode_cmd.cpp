@@ -119,10 +119,11 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	std::vector<Channel>::iterator ch_iter = findChannel(channel_name, irc.channels);
 	if (ch_iter == irc.channels.end()) 
 	{
-		message = ":No such nick/channel";
-		send_error_message(irc, i, "401", message, irc.client[i].client_sock);
+		message = ":No such channel";
+		send_error_message(irc, i, "403", message, irc.client[i].client_sock);
 		return;
 	}
+	// Control if the user is on channel. if not -> ERR_NOTONCHANNEL
 	
 	// Control if who sended cmd is a channel operator
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
@@ -147,8 +148,8 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	{
 		if (!set_users_limit_mode(option, *ch_iter, option_param))
 		{
-			message = option + " :is unknown mode char to me (Invalid parameter value).";
-			send_error_message(irc, i, "472", message, irc.client[i].client_sock);
+			message = option + " :mode +l: Invalid parameter value.";
+			send_error_message(irc, i, "", message, irc.client[i].client_sock);
 			return;
 		}
 	}

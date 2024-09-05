@@ -6,9 +6,9 @@ int is_comment(std::string command)
 	while (command[i] != 0 && command[i] != ':')
 		i++;
 	if (command[i] == ':')
-		return 0;
-	else
 		return 1;
+	else
+		return 0;
 }
 
 int check_number_of_arguments(std::string command)
@@ -22,7 +22,7 @@ int check_number_of_arguments(std::string command)
 
 	while (ss >> word)
 		num_args++;
-	if (first_wd == "KICK" && (num_args == 2 || (num_args == 3 && is_comment(command))))
+	if (first_wd == "KICK" && (num_args == 2 || (num_args > 2 && is_comment(command))))
 		return 1;
 	else if (first_wd == "TOPIC" && ((num_args > 1 && is_comment(command) == 0) || num_args == 1))
 		return 1;
@@ -43,15 +43,22 @@ void	send_to_command_function(ft_irc& irc, int i)
 {
 	std::stringstream ss(irc.buffer);
 	std::string word;
-	std::string args[10];
-	ss >> word;
+	std::string args[100];
+	std::string comment;
+	int t = 2;
 	int index = 0;
+	
+	ss >> word;
+	
+	comment = "";
 	
 	while(ss >> args[index])
 		index++;
-	
+	if (!args[2].empty())
+		while(!args[t].empty())
+			comment += " " +args[t++];
 	if (word == "KICK")
-		kick_command(irc, i, irc.client[i].nick, args[0], args[1]);
+		kick_command(irc, i, irc.client[i].nick, args[0], args[1], comment);
 	else if (word == "TOPIC")
 		topic_command(irc, i,  irc.client[i].nick, args[0], extract_message(second_command(irc)));
 	else if (word == "INVITE")

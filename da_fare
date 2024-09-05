@@ -62,8 +62,9 @@ DUBBI
 
 04/09/24
 
-- Controllo validità stringa flag in mode
 - Gestione dell'argomento opzionale 'comment' per il comando kick
+- Controllo validità stringa flag in mode
+
 
 
 	
