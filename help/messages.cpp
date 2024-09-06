@@ -25,7 +25,7 @@ void welcome_msg(ft_irc &irc, int i)
 {
     std::string buffer;
 
-    buffer = ":" + irc.client[i].server + " 001 " + irc.client[i].nick + " :Welcome to the Internet Relay Network " + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + irc.client[i].realname +"\r\n";
+    buffer = ":" + irc.client[i].server + " 001 " + irc.client[i].nick + " :Welcome to the Internet Relay Network " + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + "\r\n";
     send(irc.client[i].client_sock, buffer.c_str(), buffer.length(), 0);
 
     buffer = ":" + irc.client[i].server + " 002 " + irc.client[i].nick + " :Your host is " + irc.client[i].server + ", running version 1.0.0\r\n";

@@ -130,10 +130,12 @@ int check_nick(const std::string &nick, ft_irc &irc, int i)
 void    process_pass_command(ft_irc &irc, int i)
 {
     //non inserisco la password
-    std::string pass = trim(second_command(irc));
+    std::string pass = trim((second_command(irc)));
+    if (pass[0] == ':')
+        pass = extract_message(pass);
     if (pass.empty())
     {
-        std::string message = first_command(irc) + " : Not enoughen parameters";
+        std::string message = first_command(irc) + " : Not enough parameters";
         send_error_message(irc, i, "461", message, irc.client[i].client_sock);
     }
     else if (pass == irc.pass_server)

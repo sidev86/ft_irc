@@ -1,9 +1,5 @@
 #include "../../header/ft_irc.hpp"
 
-/*
- ERR_NEEDMOREPARAMS              ERR_NOSUCHCHANNEL
-           ERR_NOTONCHANNEL
-*/
 void part_command(ft_irc& irc, int i, const std::string& nick, const std::string& channel_name)
 {
 	std::string message;
@@ -29,12 +25,14 @@ void part_command(ft_irc& irc, int i, const std::string& nick, const std::string
 		return;
 	}
 	// If channel exists send a message to all clients of the channel that the user leaved channel
-	message = "User " + nick + " leaved the channel.";
+	message =  channel_name;
+	if (extract_message(second_command(irc)) != "")
+		message += " :" + extract_message(second_command(irc));
 	for (t = 0; t < ch_iter->users.size(); t++)
 		client_message(irc, t, "PART", message);
 	
 	// Remove user from list of user and in case from operator users if user is an operator
 	ch_iter->removeUser(nick);
-	ch_iter->removeOperator(nick);
-	ch_iter->removeInvited(nick);
+	if (ch_iter->_num_users <= 0 || ch_iter->operatorCount() <= 0)
+		ch_iter = irc.channels.erase(ch_iter);
 }

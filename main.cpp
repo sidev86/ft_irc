@@ -1,8 +1,5 @@
 #include "header/ft_irc.hpp"
 
-/*
-flag obbligatorie(i, t, k, o, l)
-*/
 ft_irc global_irc;
 
 bool valid_port(const std::string &s, ft_irc &irc)

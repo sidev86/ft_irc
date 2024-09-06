@@ -71,8 +71,10 @@ int set_users_limit_mode(const std::string& option, Channel& channel, const std:
 	return 1;
 }
 
-void set_key_mode(const std::string& option, Channel& channel, const std::string& key)
+int set_key_mode(const std::string& option, Channel& channel, const std::string& key)
 {
+	if (channel.has_key && option[0] == '+')
+		return 0;
 	if (option[0] == '-')
 	{
 		channel.has_key = false;
@@ -86,6 +88,7 @@ void set_key_mode(const std::string& option, Channel& channel, const std::string
 			channel._key = key;
 		}
 	}
+	return 1;
 }
 
 
@@ -119,15 +122,23 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	std::vector<Channel>::iterator ch_iter = findChannel(channel_name, irc.channels);
 	if (ch_iter == irc.channels.end()) 
 	{
+		// ERR_NOSUCHCHANNEL
 		message = ":No such channel";
 		send_error_message(irc, i, "403", message, irc.client[i].client_sock);
 		return;
 	}
-	// Control if the user is on channel. if not -> ERR_NOTONCHANNEL
-	
+	// Control if the user is on channel
+	std::vector<client_info>::iterator user_it = findUserInChannel(oper_name, ch_iter->users);
+	if (user_it == ch_iter->users.end()) 
+	{
+		// ERR_NOTONCHANNEL 
+		send_error_message(irc, i, "442", ":You're not on that channel.", irc.client[i].client_sock);
+		return;
+	}
 	// Control if who sended cmd is a channel operator
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
 	{
+		// ERR_CHANOPRIVSNEEDED 
 		message =  ":You're not channel operator.";
 		send_error_message(irc, i, "482", message, irc.client[i].client_sock);
 		return;
@@ -135,6 +146,7 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	
 	if (!valid_option(option))
 	{
+		// ERR_UNKNOWNMODE
 		message = option + " :is unknown mode char to me";
 		send_error_message(irc, i, "472", message, irc.client[i].client_sock);
 		return;
@@ -148,22 +160,32 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	{
 		if (!set_users_limit_mode(option, *ch_iter, option_param))
 		{
-			message = option + " :mode +l: Invalid parameter value.";
+			message = option + ": Invalid parameter value.";
 			send_error_message(irc, i, "", message, irc.client[i].client_sock);
 			return;
 		}
 	}
 	else if (option[1] == 'k')
-		set_key_mode(option, *ch_iter, option_param);
+	{
+		if (!set_key_mode(option, *ch_iter, option_param))
+		{
+			// ERR_KEYSET
+			message = ":Channel key already set";
+			send_error_message(irc, i, "467", message, irc.client[i].client_sock);
+			return;
+		}
+	}
 	else if (option[1] == 'o')
 	{
 		if (!set_operator_mode(option, *ch_iter, option_param))
 		{
+			// ERR_NOSUCHNICK
 			send_error_message(irc, i, "401", ":No such nick.", irc.client[i].client_sock);
 			return;
 		}
 	}
+	// RPL_CHANNELMODEIS
 	message = ch_iter->_name + " " + option;
 	for (t = 0; t < ch_iter->users.size(); t++)
-		client_message(irc, t, "MODE", message);
+		client_message(irc, t, "324", message);
 }

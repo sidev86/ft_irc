@@ -7,6 +7,7 @@ Channel::Channel(std::string name)
 	this->_num_users = 0;
 	this->_max_users = -1;
 	this->_topic = "";
+    this->have_op = false;
 	this->invite_only = false;
 	this->has_password = false; 
 	this->topic_all_users = false;

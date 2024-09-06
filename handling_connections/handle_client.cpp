@@ -1,36 +1,49 @@
 #include "../header/ft_irc.hpp"
 
-// Funzione per leggere i dati in arrivo dal socket e processarli
+/*
+se crei 2 client ogniuno crea il suo canale e
+esempio
+client 1 #SAS
+client 2 #SOS
+e client 1 entra in #SOS
+e client 2 entra in #SAS
+se poi il primo client esce.
+poi non posso creare una altra connessione con lo stesso perche non mi entra in accepts_connection
+e leakka perche indice del client e negativo
+*/
 int process_incoming_data(ft_irc &irc, int i)
 {
-        // Ignora i dati in arrivo se il server è sospeso
     if (irc.server_suspended)
         return 0;
-    //legge dati del client
-    ssize_t bytes = recv(irc.p_fds[i].fd, irc.buffer, sizeof(irc.buffer) -1, 0);
+    ssize_t bytes = recv(irc.p_fds[i].fd, irc.buffer, sizeof(irc.buffer) - 1, 0);
     if (bytes <= 0)
     {
-        close(irc.p_fds[i].fd); //chiude connession
-        irc.p_fds.erase(irc.p_fds.begin() + i); //rimuobe l'fd monitorato da poll
-        irc.client.erase(irc.client.begin() + i); //rimuove il client dal vettore
+        close(irc.p_fds[i].fd);
+        irc.p_fds.erase(irc.p_fds.begin() + i);
+        irc.client.erase(irc.client.begin() + i);
+
         if (bytes < 0)
         {
             perror("recv");
-            std::cout << "🚨Error: \n(connection closed)🚨" << std::endl;
+            std::cerr << "🚨Error: (connection closed)🚨" << std::endl;
         }
+
         return 1;
     }
+
     irc.buffer[bytes] = '\0';
     if (first_command(irc) == "CAP" && trim(second_command(irc)) == "LS 302")
         return 0;
+
     if (handle_command(irc, i) == 1)
         return 1;
+
     return 0;
 }
 
+
 int accept_connections(ft_irc &irc)
 {
-    //inizzializzo client
     client_info new_client;
     new_client.client_len = sizeof(new_client.client_addr);
     new_client.client_sock = accept(irc.server.server_sock, (struct sockaddr *)&new_client.client_addr, &new_client.client_len);
@@ -44,7 +57,7 @@ int accept_connections(ft_irc &irc)
         perror("accept");
         return 1;
     }
-    // Aggiungi il nuovo client al vettore dei client
+
     irc.client.push_back(new_client);
     init_poll(irc, new_client.client_sock);
     return 0;
@@ -55,7 +68,6 @@ int set_sock(ft_irc &irc,int i)
     int reuse = 1;
     if (non_blocking_server(irc.client[i].client_sock) == 1)
         return 1;
-    //setta il socket in modo che se esci lo puoi subito riutilizzare lo stesso
     if (setsockopt(irc.client[i].client_sock, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) < 0)
     {
         std::cerr << "🚨Error: \n(setsockopt failed)🚨" << std::endl;
@@ -87,7 +99,6 @@ int pfd_connections(ft_irc &irc)
                     i++;
                     continue;
                 }
-                
             }
             else
             {
@@ -100,20 +111,18 @@ int pfd_connections(ft_irc &irc)
     return 0;
 }
 
-// Funzione per eseguire il poll e gestire gli eventi in arrivo
 int poll_and_handle(ft_irc &irc)
 {
     int result = 0;
-    // Se il server è sospeso, non eseguire il polling
+
     if (irc.server_suspended)
         return 0;
-    memset(irc.buffer, 0, sizeof(irc.buffer)); //inizializza il buffer a 0
-    //faccio si che pool monitori tutti gli fd all'infinito
+    memset(irc.buffer, 0, sizeof(irc.buffer));
     do
     {
         result = poll(irc.p_fds.data(), irc.p_fds.size(), -1);
     } 
-    while (result < 0 && errno == EINTR); // Gestisce l'errore EINTR
+    while (result < 0 && errno == EINTR);
     if (result < 0)
     {
         colored_message("🚨Error: \n(poll failed)🚨", RED);
@@ -125,10 +134,8 @@ int poll_and_handle(ft_irc &irc)
     return 0;
 }
 
-// Funzione principale per gestire il client
 int handle_client(ft_irc &irc)
 {
-    // Verifica se il server è sospeso
     if (irc.server_suspended)
         return 0;
     if (poll_and_handle(irc) == 1)

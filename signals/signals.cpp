@@ -1,5 +1,7 @@
 #include "../header/ft_irc.hpp"
 
+/*ctrl+d divide comando e poi lo esegue insieme
+ctrl+d ctrl+d spacca il programma*/
 // Dichiarazione della variabile globale dell'istanza di ft_irc
 extern ft_irc global_irc;
 

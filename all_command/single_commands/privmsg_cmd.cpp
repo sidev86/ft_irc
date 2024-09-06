@@ -34,6 +34,7 @@ void sendMessageToUser(ft_irc& irc, const std::string& sender, const std::string
     }
 }
 
+
 void sendMessageToChannel(ft_irc& irc, const std::string& channelName, const std::string& message, client_info& sender)
 {
     // Trova il canale
