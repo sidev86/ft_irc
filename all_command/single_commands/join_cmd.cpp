@@ -68,6 +68,8 @@ void	reply_to_channel(ft_irc& irc, int i, std::vector<Channel>::iterator it)
 
 int invite_only(ft_irc& irc, int i, const std::string& channel_name, const std::string& nick, std::vector<Channel>::iterator it, const std::string& key)
 {
+	unsigned long int t;
+	
 	if (it->users_limit && it->_num_users >= it->_max_users)
 	{
 		//client_message(irc, i, "JOIN", message);
@@ -100,8 +102,9 @@ int invite_only(ft_irc& irc, int i, const std::string& channel_name, const std::
 			return (1);
 	}
 	if (!irc.msg.empty())
-		client_message(irc, i, "JOIN", irc.msg);
-	//TODO send to all clients in channel
+		//Send to all clients in channel
+		for (t = 0; t < it->users.size(); t++)
+				client_message(irc, t, "JOIN", irc.msg);
 	return (0);
 }
 
@@ -178,8 +181,5 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 	reply_to_channel(irc, i, it);
 	std::cout << "\n**CHANNEL USERS**\n" << std::endl;
 	for (std::vector<client_info>::iterator u_it = it->users.begin(); u_it != it->users.end(); ++u_it)
-	{
 		std::cout << u_it->user << std::endl;
-	}
-    // TODO: Verifica il tipo di canale. Se è "invite-only", solo gli utenti invitati dall'operatore possono unirsi.
 }

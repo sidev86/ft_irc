@@ -30,9 +30,9 @@ void set_invite_mode(const std::string& option, Channel& channel)
 void set_topic_mode(const std::string& option, Channel& channel)
 {
 	if (option[0] == '+')
-		channel.topic_all_users = false;
-	else
-		channel.topic_all_users = true;
+		channel.topic_limited = true;
+	else if (option[0] == '-')
+		channel.topic_limited = false;
 }
 
 int param_is_numeric(const std::string& param)

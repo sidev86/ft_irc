@@ -10,7 +10,7 @@ Channel::Channel(std::string name)
     this->have_op = false;
 	this->invite_only = false;
 	this->has_password = false; 
-	this->topic_all_users = false;
+	this->topic_limited = false;
 	this->users_limit = false;
 	this->has_key = false;
 	

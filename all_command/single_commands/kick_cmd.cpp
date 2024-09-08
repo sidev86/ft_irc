@@ -38,7 +38,7 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	// Control if who sended cmd is a channel operator
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
 	{
-		send_error_message(irc, i, "482", ":they're not channel operator.", irc.client[i].client_sock);
+		send_error_message(irc, i, "482", ":You're not channel operator.", irc.client[i].client_sock);
 		return;
 	}
 
