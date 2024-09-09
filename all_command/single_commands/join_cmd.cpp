@@ -16,7 +16,7 @@ int	join_to_channel(ft_irc& irc, Channel& channel, const std::string& nick, int 
 		//channel.addUser(nick);
 		if (userReceivedInvite(channel, nick))
 			channel.removeInvited(nick);
-		irc.msg = nick + " has joined the channel " + channel._name;
+		irc.msg = channel._name;
 		return (0);
 	}
 	else
@@ -104,7 +104,7 @@ int invite_only(ft_irc& irc, int i, const std::string& channel_name, const std::
 	if (!irc.msg.empty())
 		//Send to all clients in channel
 		for (t = 0; t < it->users.size(); t++)
-				client_message(irc, t, "JOIN", irc.msg);
+				client_message_all_users(irc, i, (int)t, "JOIN", irc.msg);
 	return (0);
 }
 

@@ -6,19 +6,47 @@ implemntare rimuovi canale se user sono finiti
 se un operatore di un canale con piu utenti esce il canale si elimina
 */
 
-void quit_command(ft_irc &irc, int i)
+void quit_command(ft_irc &irc, int i, const std::string& comment)
 {
+    std::string message;
+    unsigned long int t;
+    
     if (!irc.channels.empty())
     {
+    	// Notify all users in same channels of quitting user
+    	for (t = 0; t < irc.client.size(); t++)
+	{
+		for (std::vector<Channel>::iterator ch_it = irc.channels.begin(); ch_it != irc.channels.end(); ch_it++)
+		{
+			if (findUserInChannel(irc.client[i].nick, ch_it->users) != ch_it->users.end() && findUserInChannel(irc.client[t].nick, ch_it->users) != ch_it->users.end() && i != (int)t)
+			{
+				if (!irc.client[t].quit_received)
+				{
+					irc.client[t].quit_received = true;
+					message = ":" + comment;
+					
+					client_message_all_users(irc,i, (int)t, "QUIT", message);
+				}
+			}
+		}
+		irc.client[t].quit_received = false;
+	}
+	
+	
+		
         std::vector<Channel>::iterator it = irc.channels.begin();
         while (it != irc.channels.end())
         {
-            it->DeleteUserFromChannel(irc, i);
+		it->DeleteUserFromChannel(irc, i);
 
-            if (it->_num_users <= 0 || it->operatorCount() <= 0)
-                it = irc.channels.erase(it);
-            else
-                ++it;
+		if (it->_num_users <= 0 || it->operatorCount() <= 0)
+			it = irc.channels.erase(it);
+		else
+		{
+		
+			++it;
+		}
+            
         }
     }
     std::string secondCmd = second_command(irc);

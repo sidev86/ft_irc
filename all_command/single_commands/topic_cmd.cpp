@@ -5,30 +5,34 @@ void set_view_topic(ft_irc& irc, int i, Channel& channel, const std::string new_
 	std::string message;
 	unsigned long int t;
 	
+	// User just wanna see the topic of the channel
 	if (new_topic.empty())
 	{
 		message = ":" + channel._topic;
-		for (t = 0; t < channel.users.size(); t++)
-			client_message(irc, t, "TOPIC", message);
+		client_message(irc, i, "TOPIC", message);
 		return ;
 	}
+	
+	// User wanna set a topic
 	if (!new_topic.empty())
 		channel._topic = new_topic;
+		
+	
 	if (!channel._topic.empty())
 	{
-		message = ":" + irc.client[i].server + " 332 " + irc.client[i].nick + " " + channel._name + " :" + channel._topic;
+		message = ":" + irc.client[i].server + " 332 " + channel._name + " :" + channel._topic;
 		
 		if(!new_topic.empty())
 		{
 			for (t = 0; t < channel.users.size(); t++)
-				client_message(irc, t, "TOPIC", message);
+				client_message_all_users(irc, i, (int)t, "TOPIC", message);
 		}
 		else
 			client_message(irc, i, "TOPIC", message);
 	}
 	else
 	{
-		message = ":" + irc.client[i].server + " 331 " + irc.client[i].nick + " " + channel._name + " :No topic is set";
+		message = ":" + irc.client[i].server + " 331 " + channel._name + " :No topic is set";
 		client_message(irc, i, "", message);
 	}
 }

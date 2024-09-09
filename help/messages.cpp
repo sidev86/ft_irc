@@ -12,6 +12,18 @@ void client_message(ft_irc &irc, int i, const std::string &command, const std::s
     send(irc.client[i].client_sock, message.c_str(), message.length(), 0);
 }
 
+void client_message_all_users(ft_irc &irc, int i, int t, const std::string &command, const std::string &ex_message)
+{
+    std::string message;
+    if (command.empty())
+        message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
+    else
+        message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
+    message = message + " " + ex_message;
+    message = message + "\r\n";
+    send(irc.client[t].client_sock, message.c_str(), message.length(), 0);
+}
+
 void send_error_message(ft_irc &irc, int i, const std::string err_code, const std::string &message, int sock)
 {
     std::string msg_error;

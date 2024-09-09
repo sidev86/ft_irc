@@ -50,6 +50,7 @@ int accept_connections(ft_irc &irc)
     new_client.is_nick = false;
     new_client.is_user = false;
     new_client.is_pass = false;
+    new_client.quit_received = false;
     new_client.authenticated = false;
     if (new_client.client_sock < 0)
     {

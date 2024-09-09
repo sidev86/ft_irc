@@ -41,6 +41,7 @@ class client_info
         bool    is_nick;
         bool    is_user;
         bool    is_pass;
+        bool	quit_received;
         bool clientHasName(const std::string& name) const 
         {
             return nick == name;
@@ -104,8 +105,9 @@ void	operator_command(ft_irc& irc, int i);
 void	channel_command(ft_irc& irc, int i);
 void	send_to_command_function(ft_irc& irc, int i);
 void    process_pass_command(ft_irc &irc, int i);
-void    quit_command(ft_irc &irc, int i);
+void	quit_command(ft_irc &irc, int i, const std::string& comment);
 void    client_message(ft_irc &irc, int i, const std::string &command, const std::string &ex_message);
+void	client_message_all_users(ft_irc &irc, int i, int t, const std::string &command, const std::string &ex_message);
 void    send_error_message(ft_irc &irc, int i, const std::string err_code, const std::string &message, int sock);
 void    init_poll(ft_irc &irc, int &sock);
 void    colored_message(const std::string message, const std::string color);
