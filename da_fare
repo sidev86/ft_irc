@@ -62,8 +62,13 @@ DUBBI
 
 04/09/24
 
-- Gestione dell'argomento opzionale 'comment' per il comando kick
+- Gestione dell'argomento opzionale 'comment' per il comando kick(done)
 - Controllo validità stringa flag in mode
+
+
+08/09/24
+
+- Fixing flag topic (done) 
 
 
 

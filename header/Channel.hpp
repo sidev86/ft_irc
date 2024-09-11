@@ -15,6 +15,7 @@ class Channel
 	    std::string _name;
 	    std::string _topic;
 	    std::string _key;
+		std::string	flags;
 
 	    int _num_users;
 	    int _max_users;
@@ -22,6 +23,7 @@ class Channel
 	    std::vector<client_info> users; // Usa client_info qui
 	    std::vector<client_info> operatorUsers;
 	    std::vector<client_info> invitedUsers;
+		std::vector<std::string> flag_o;
 		
 	    //MODES
 	    bool invite_only;

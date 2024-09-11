@@ -18,6 +18,11 @@ void init_poll(ft_irc &irc, int &sock)
     irc.p_fds.push_back(pfd); //inserisco pfd nel vettore
 }
 
+void removeChars(std::string& str, const char charsToRemove)
+{
+    str.erase(std::remove(str.begin(), str.end(), charsToRemove), str.end());
+}
+
 bool enough_elements(const std::string &input)
 {
     std::istringstream iss(input);

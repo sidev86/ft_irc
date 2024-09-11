@@ -1,9 +1,6 @@
 #include "../../header/ft_irc.hpp"
-/*con canali manda il messaggio a tutti i canali
-e poi lo rimuove dai canali a cui fa parte
-esempio: (:nick!user@host QUIT :Quit: Gone fishing)
-implemntare rimuovi canale se user sono finiti
-se un operatore di un canale con piu utenti esce il canale si elimina
+/*
+implementare messaggio di addi agli utenti con cui ha avuto PRIVMSG
 */
 
 void quit_command(ft_irc &irc, int i, const std::string& comment)
@@ -24,16 +21,12 @@ void quit_command(ft_irc &irc, int i, const std::string& comment)
 				{
 					irc.client[t].quit_received = true;
 					message = ":" + comment;
-					
-					client_message_all_users(irc,i, (int)t, "QUIT", message);
+					client_message_all_users(irc, i, (int)t, "QUIT", message);
 				}
 			}
 		}
 		irc.client[t].quit_received = false;
 	}
-	
-	
-		
         std::vector<Channel>::iterator it = irc.channels.begin();
         while (it != irc.channels.end())
         {

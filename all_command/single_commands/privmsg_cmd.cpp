@@ -1,20 +1,6 @@
 #include "../../header/ft_irc.hpp"
 #include "../../header/Channel.hpp"
-
-/*
-ERR_TOOMANYTARGETS
-*/
-
-bool    valid_message(const std::string& target)
-{
-    size_t i = 0;
-    for (;target[i] == ' '; i++)
-    {        
-    }
-    if (target[i] != ' ' && target[i] != 0)
-        return true;
-    return false;
-}
+const size_t MAX_RECIPIENTS = 3;
 
 bool Channel::isMember(const client_info& user)
 {
@@ -24,7 +10,6 @@ bool Channel::isMember(const client_info& user)
 void sendMessageToUser(ft_irc& irc, const std::string& sender, const std::string reciver, const std::string& message)
 {
     int userIndex = get_user_index(irc.client, sender);
-    std::cout << "Debug: User Index = " << userIndex << std::endl;
 
     if (userIndex != -1 && userIndex < static_cast<int>(irc.client.size()))
     {
@@ -33,7 +18,6 @@ void sendMessageToUser(ft_irc& irc, const std::string& sender, const std::string
         client_message(irc, userIndex, "PRIVMSG", full_message);
     }
 }
-
 
 void sendMessageToChannel(ft_irc& irc, const std::string& channelName, const std::string& message, client_info& sender)
 {
@@ -49,7 +33,7 @@ void sendMessageToChannel(ft_irc& irc, const std::string& channelName, const std
             return;
         }
         // Il canale esiste
-        std::string privmsg = ":" + sender.nick + " PRIVMSG " + channelName + message + "\r\n";
+        std::string privmsg = ":" + sender.nick + " PRIVMSG " + channelName + " " + message + "\r\n";
 
         // Invia il messaggio a tutti gli utenti del canale
         for (size_t i = 0; i < channelIt->users.size(); i++)
@@ -61,68 +45,112 @@ void sendMessageToChannel(ft_irc& irc, const std::string& channelName, const std
     }
 }
 
-// Funzione per gestire il comando PRIVMSG
+int invalid_command(ft_irc& irc, int i, const std::string& recipients)
+{
+    std::stringstream ss(recipients);
+    std::vector<std::string> individual_target;
+    std::string individual_targets;
+    while (std::getline(ss, individual_targets, ','))
+    {
+        size_t dot = individual_targets.find(":");
+        // Stampa il target
+        // Controlla se ':' è stato trovato
+        if (dot != std::string::npos && dot > 0) // Assicura che ci sia qualcosa prima del ':'
+        {
+            // Verifica se il carattere prima del ':' è uno spazio
+            if (individual_targets[dot - 1] != ' ')
+            {
+                send_error_message(irc, i, "421", ":Unknown command", irc.client[i].client_sock);
+                return (1);
+            }
+        }
+    }
+    return (0);
+}
+
 void privmsg_command(ft_irc& irc, int i, const std::string& target)
 {
-    // Separare il nome del canale o del destinatario dal messaggio
-    size_t pos = target.find(' ');
-    // ERR_NORECIPIENT (411): Nessun destinatario specificato
     if (target.empty() || target[0] == ':')
     {
         std::string errMsg = "411 " + irc.client[i].nick + " :No recipient given " + first_command(irc) + "\r\n";
         send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
         return;
     }
-    std::string channel_name = target.substr(0, pos);
-    std::string msg = target.substr(pos + 1);
-    std::cout << msg << std::endl;
-
-    // ERR_NOTEXTTOSEND (412): Nessun testo da inviare
-    if (valid_message(extract_message(target)) == false)
+    size_t colon_pos = target.find(" :");
+    std::string msg;
+    std::string recipients;
+    if (colon_pos == std::string::npos)
+    {
+        msg = "";
+        recipients = target;
+    }
+    else
+    {
+        msg = target.substr(colon_pos + 2);
+        recipients = target.substr(0, colon_pos);
+    }
+    if (recipients.find(",") != std::string::npos || recipients.find(" ") != std::string::npos)
+    {
+        // Se c'è uno spazio senza virgola, è un errore di comando
+        if (recipients.find(" ") != std::string::npos && recipients.find(",") == std::string::npos)
+        {
+            std::string errMsg = "421 " + irc.client[i].nick + " " + first_command(irc) + " :Unknown command\r\n";
+            send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
+            return;
+        }
+    }
+    if (invalid_command(irc, i, recipients) == 1)
+        return;
+    if (msg.empty())
     {
         std::string errMsg = "412 " + irc.client[i].nick + " :No text to send\r\n";
         send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
         return;
     }
+    std::stringstream ss(recipients);
+    std::vector<std::string> individual_targets;
+    std::string individual_target;
+    while (std::getline(ss, individual_target, ','))
+    {
+        individual_target.erase(0, individual_target.find_first_not_of(" \n\r\t"));
+        individual_target.erase(individual_target.find_last_not_of(" \n\r\t") + 1);
 
-    // Se il destinatario è un canale
-    if (channel_name[0] == '#')
-    { 
-        std::vector<Channel>::iterator it = findChannel(channel_name, irc.channels);
-
-        // ERR_NOSUCHNICK (401): Il canale non esiste
-        if (it == irc.channels.end())
-        {
-            std::string errMsg = "403 " + channel_name + " :No such channel\r\n";
-            send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
-            return;
-        }
-        // Invia il messaggio a tutti i membri del canale
-        sendMessageToChannel(irc, channel_name, msg, irc.client[i]);
+        if (!individual_target.empty())
+            individual_targets.push_back(individual_target);
     }
-    else
-    { // Se il destinatario è un utente
-        int userIndex = get_user_index(irc.client, channel_name);
 
-        // ERR_NOSUCHNICK (401): L'utente specificato non esiste
-        if (userIndex == -1)
+    // Verifica il numero di destinatari
+    if (individual_targets.size() > MAX_RECIPIENTS)
+    {
+        std::string errMsg = "407 " + irc.client[i].nick + " :Too many recipients\r\n";
+        send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
+        return;
+    }
+    for (size_t j = 0; j < individual_targets.size(); ++j)
+    {
+        const std::string& target = individual_targets[j];
+        // Se il destinatario è un canale
+        if (target[0] == '#')
         {
-            std::string errMsg = "401 " + channel_name + " :No such nick/channel\r\n";
-            send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
-            return;
+            std::vector<Channel>::iterator it = findChannel(target, irc.channels);
+            if (it == irc.channels.end())
+            {
+                std::string errMsg = "403 " + target + " :No such channel\r\n";
+                send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
+                continue;
+            }
+            sendMessageToChannel(irc, target, ":" + msg, irc.client[i]);
         }
-
-        // Invia il messaggio all'utente
-        sendMessageToUser(irc, channel_name, irc.client[i].nick, msg);
+        else
+        { // Se il destinatario è un utente
+            int userIndex = get_user_index(irc.client, target);
+            if (userIndex == -1)
+            {
+                std::string errMsg = "401 " + target + " :No such nick/channel\r\n";
+                send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
+                continue;
+            }
+            sendMessageToUser(irc, target, irc.client[i].nick, ":" + msg);
+        }
     }
 }
-
-// ERR_TOOMANYTARGETS (407): Gestione dell'invio a troppi destinatari (in caso di lista separata da virgole)
-/*std::vector<std::string> recipients = splitTargets(channel_name); // Presupponendo che splitTargets separi i destinatari con virgole
-if (recipients.size() > MAX_RECIPIENTS)
-{ // Definisci MAX_RECIPIENTS come appropriato per il tuo protocollo
-    std::string errMsg = "407 " + irc.client[i].nick + " :Too many targets\r\n";
-    send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
-    return;
-}
-*/

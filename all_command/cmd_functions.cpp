@@ -11,7 +11,6 @@ std::vector<Channel>::iterator findChannel(const std::string& channel_name, std:
     return channels.end();  // Canale non trovato
 }	
 	
-	
 std::vector<client_info>::iterator findUserInChannel(const std::string& nick, std::vector<client_info>& users) 
 {
     for (std::vector<client_info>::iterator it = users.begin(); it != users.end(); ++it) 

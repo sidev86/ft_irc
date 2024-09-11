@@ -15,7 +15,7 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 	
 	if (ch_iter->isMember(irc.client[i]) == false)
 	{
-		message = channel_name + " :they're not on that channel";
+		message = channel_name + " :They're not on that channel";
 		send_error_message(irc, i, "442", message, irc.client[i].client_sock);
 		return;
 	}
@@ -31,7 +31,7 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 	// Control if who sended cmd is a channel operator
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
 	{
-		message =  ":they're not channel operator.";
+		message =  ":They're not channel operator.";
 		send_error_message(irc, i, "482", message, irc.client[i].client_sock);
 		return;
 	}

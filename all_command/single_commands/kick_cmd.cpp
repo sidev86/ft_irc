@@ -1,15 +1,4 @@
 #include "../../header/ft_irc.hpp"
-
-/*
-ERR_CHANOPRIVSNEEDED
-JOIN #Saas
-:s2!s@s JOIN Welcome to the channel #Saas
-KICK #Saas samu12 : gay
-:s 461 s2 :Not enough parameters.
-KICK #Saas samu12 :gay
-:s 441 s2 :They're not on that channel.
-il commento puo essere ance piu lungo di una parola
-*/
 	
 void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name) 
 {	
@@ -30,7 +19,7 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	std::vector<client_info>::iterator user_it = findUserInChannel(nick_name, ch_iter->users);
 	if (user_it == ch_iter->users.end() || ch_iter->isMember(irc.client[i]) == false || findUserInChannel(nick_name, ch_iter->users) == ch_iter->users.end()) 
 	{
-		send_error_message(irc, i, "441", ":they're not on that channel.", irc.client[i].client_sock);
+		send_error_message(irc, i, "441", ":They're not on that channel.", irc.client[i].client_sock);
 		return;
 	}
 	//User found
@@ -38,7 +27,7 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	// Control if who sended cmd is a channel operator
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
 	{
-		send_error_message(irc, i, "482", ":You're not channel operator.", irc.client[i].client_sock);
+		send_error_message(irc, i, "482", ":They're not channel operator.", irc.client[i].client_sock);
 		return;
 	}
 
@@ -53,4 +42,5 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 		send(irc.client[t].client_sock, message.c_str(), message.size(), 0);
 	// Remove user from list of user and in case from operator users if user is an operator
 	ch_iter->removeUser(nick_name);
+	ch_iter->removeInvited(nick_name);
 }

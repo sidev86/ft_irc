@@ -17,7 +17,9 @@ Channel::Channel(std::string name)
 }
 Channel::~Channel() {}
 
-Channel::Channel() {}
+Channel::Channel()
+{
+}
 
 void Channel::addUser(ft_irc &irc, int i)
 {

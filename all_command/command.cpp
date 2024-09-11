@@ -4,7 +4,7 @@ void    commands(ft_irc &irc, int i)
 {
     std::string message = first_command(irc) + " :Unknown command";
     std::string target;
-    
+
     if (first_command(irc) == "KICK" || first_command(irc) == "TOPIC" || first_command(irc) == "INVITE" || first_command(irc) == "MODE")
     	operator_command(irc, i);
     else if (first_command(irc) == "JOIN" || first_command(irc) == "PART" || first_command(irc) == "QUIT")
