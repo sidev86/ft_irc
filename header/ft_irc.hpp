@@ -97,6 +97,7 @@ std::vector<Channel>::iterator	findChannel(const std::string& channel_name, std:
 std::vector<client_info>::iterator	findUserInChannel(const std::string& user_name, std::vector<client_info>& users);
 
 void    client_message_all_users(ft_irc &irc, int i, int t, const std::string &command, const std::string &ex_message);
+void	client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message);
 void    removeChars(std::string& str, const char charsToRemove);
 void    part_command(ft_irc& irc, int i, const std::string& user_name, const std::string& channel_name);
 void    handle_termination(int signal);

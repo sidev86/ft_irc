@@ -10,7 +10,6 @@ bool Channel::isMember(const client_info& user)
 void sendMessageToUser(ft_irc& irc, const std::string& sender, const std::string reciver, const std::string& message)
 {
     int userIndex = get_user_index(irc.client, sender);
-
     if (userIndex != -1 && userIndex < static_cast<int>(irc.client.size()))
     {
         // L'utente esiste, invia il messaggio
@@ -38,9 +37,12 @@ void sendMessageToChannel(ft_irc& irc, const std::string& channelName, const std
         // Invia il messaggio a tutti gli utenti del canale
         for (size_t i = 0; i < channelIt->users.size(); i++)
         {
-            client_info user = channelIt->users[i];
-            // Non inviare il messaggio al mittente
-            send(user.client_sock, privmsg.c_str(), privmsg.size(), 0);
+            if (sender.client_sock != irc.client[i].client_sock)
+            {
+                client_info user = channelIt->users[i];
+                // Non inviare il messaggio al mittente
+                send(user.client_sock, privmsg.c_str(), privmsg.size(), 0);
+            }
         }
     }
 }
@@ -150,7 +152,8 @@ void privmsg_command(ft_irc& irc, int i, const std::string& target)
                 send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
                 continue;
             }
-            sendMessageToUser(irc, target, irc.client[i].nick, ":" + msg);
+            if (individual_target != irc.client[i].nick)
+                sendMessageToUser(irc, target, irc.client[i].nick, ":" + msg);
         }
     }
 }

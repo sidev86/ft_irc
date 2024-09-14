@@ -33,13 +33,11 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 
 	// If channel exists send a message to all clients of the channel that the user leaved channel
 	//message = "User " + nick_name + " has been kicked from channel.";
-	if (extract_message(second_command(irc)) != "")
-		message = irc.client[i].server + " KICK " + channel_name + " " + nick_name + " :" + extract_message(second_command(irc));
-	else
-		message = irc.client[i].server + " KICK " + channel_name + " " + nick_name;
-	message += "\r\n";
+	
+	message = channel_name + " " + nick_name;
+	
 	for (t = 0; t < ch_iter->users.size(); t++)
-		send(irc.client[t].client_sock, message.c_str(), message.size(), 0);
+		client_message_in_channel(irc, *ch_iter, i, (int)t, "KICK", message);
 	// Remove user from list of user and in case from operator users if user is an operator
 	ch_iter->removeUser(nick_name);
 	ch_iter->removeInvited(nick_name);

@@ -54,7 +54,6 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 		ch_iter->invitedUsers.push_back(irc.client[i2]);
 		message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
 		message =  message + " INVITE " + nick_name + " :" + channel_name;
-		message = message + "\r\n";
     	send(irc.client[i2].client_sock, message.c_str(), message.length(), 0);
 	}
 	std::string invite = irc.client[i2].nick + " " + channel_name;

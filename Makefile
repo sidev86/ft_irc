@@ -34,9 +34,7 @@ MAGENTA = \033[35m
 CYAN = \033[36m
 
 all: $(NAME)
-	@echo "$(BOLD)$(CYAN)[Compilazione binario]:$(RESET) $@"
-	$(CPP) $(CPPFLAGS) -o $(NAME) $(OBJS)
-	@echo "$(BOLD)$(GREEN)[Successo!]:$(RESET) $(NAME) è stato creato con successo! 🚀🎉"
+
 $(NAME): $(OBJS)
 	$(CPP) $(CPPFLAGS) -o $(NAME) $(OBJS)
 

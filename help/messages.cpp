@@ -14,14 +14,28 @@ void client_message(ft_irc &irc, int i, const std::string &command, const std::s
 
 void client_message_all_users(ft_irc &irc, int i, int t, const std::string &command, const std::string &ex_message)
 {
+    (void)i;
     std::string message;
-    if (command.empty())
+if (command.empty())
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
     else
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
     message = message + " " + ex_message;
     message = message + "\r\n";
     send(irc.client[t].client_sock, message.c_str(), message.length(), 0);
+}
+
+void client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message)
+{
+	(void)i;
+	std::string message;
+	if (command.empty())
+		message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
+	else
+		message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
+	message = message + " " + ex_message;
+	message = message + "\r\n";
+	send(channel.users[t].client_sock, message.c_str(), message.length(), 0);
 }
 
 void send_error_message(ft_irc &irc, int i, const std::string err_code, const std::string &message, int sock)
@@ -37,17 +51,14 @@ void welcome_msg(ft_irc &irc, int i)
 {
     std::string buffer;
 
-    buffer = ":" + irc.client[i].server + " 001 " + irc.client[i].nick + " :Welcome to the Internet Relay Network " + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + "\r\n";
-    send(irc.client[i].client_sock, buffer.c_str(), buffer.length(), 0);
-
-    buffer = ":" + irc.client[i].server + " 002 " + irc.client[i].nick + " :Your host is " + irc.client[i].server + ", running version 1.0.0\r\n";
-    send(irc.client[i].client_sock, buffer.c_str(), buffer.length(), 0);
-
-    buffer = ":" + irc.client[i].server + " 003 " + irc.client[i].nick + " :This server was created on " + __DATE__ + " at " + __TIME__ + "\r\n";
-    send(irc.client[i].client_sock, buffer.c_str(), buffer.length(), 0);
-
-    buffer = ":" + irc.client[i].server + " 004 " + irc.client[i].nick + " " + irc.client[i].server + " 1.0.0 ao mtov\r\n";
-    send(irc.client[i].client_sock, buffer.c_str(), buffer.length(), 0);
+    buffer = irc.client[i].nick + " :Welcome to the Internet Relay Network " + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
+    send_error_message(irc, i, "001", buffer, irc.client[i].client_sock);
+    buffer =irc.client[i].nick + " :Your host is " + irc.client[i].server + ", running version 1.0.0";
+    send_error_message(irc, i, "002", buffer, irc.client[i].client_sock);
+    buffer = irc.client[i].nick + " :This server was created on " + __DATE__ + " at " + __TIME__;
+    send_error_message(irc, i, "003", buffer, irc.client[i].client_sock);
+    buffer = irc.client[i].nick + " " + irc.client[i].server + " 1.0.0 ao mtov";
+    send_error_message(irc, i, "004", buffer, irc.client[i].client_sock);
 }
 
 void    colored_message(const std::string message, const std::string color)

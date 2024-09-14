@@ -71,6 +71,13 @@ DUBBI
 - Fixing flag topic (done) 
 
 
+14/09/24
+
+- Testare TOPIC (logica corretta? + commenti con più parole)
+- Notifica JOIN a utenti canale
+- Fixare problema KICK in konversation
+- KICK -> aggiungere gestione commento
+
 
 	
 

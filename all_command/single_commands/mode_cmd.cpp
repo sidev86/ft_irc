@@ -154,6 +154,7 @@ void show_mode(ft_irc& irc, int i2, const std::string& channel_name)
 void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string option, const std::string& option_param)
 {
 	std::string message;
+	unsigned long int t;
 /* 	if (irc.channels.empty())
 	{
 		message = ":No such channel";
@@ -190,6 +191,8 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	}
 	if (!valid_option(option) || option.length() > 2)
 	{
+		if (option[1] == 'b')
+			return;
 		message = option + " :is unknown mode char to me";
 		send_error_message(irc, i, "472", message, irc.client[i].client_sock);
 		return;
@@ -233,7 +236,7 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 		ch_iter->flag_o.push_back(option_param);
 	}
 	ch_iter->flags = ch_iter->flags + option[1];
-/* 	message = ch_iter->_name + " " + option;
+ 	message = ch_iter->_name + " " + option;
 	for (t = 0; t < ch_iter->users.size(); t++)
-		client_message(irc, t, "MODE", message); */
+		client_message_in_channel(irc, *ch_iter, i, (int)t, "MODE", message);
 }

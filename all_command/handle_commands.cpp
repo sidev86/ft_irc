@@ -70,7 +70,6 @@ void	send_to_command_function(ft_irc& irc, int i)
 
 void	operator_command(ft_irc& irc, int i)
 {
-	std::cout << "Operator command: " << irc.buffer << std::endl;
 	//splittare il buffer ovvero il comando, contare gli argomenti del comando e se sono
 	//più di quelli previsti dò errore
 	if (!check_number_of_arguments(irc.buffer))
