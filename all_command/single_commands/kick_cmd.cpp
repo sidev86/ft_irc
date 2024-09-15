@@ -1,6 +1,6 @@
 #include "../../header/ft_irc.hpp"
 	
-void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name) 
+void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name, const std::string& comment) 
 {	
 	//std::cout << oper_name << " " << channel_name << " " << nick_name << std::endl;
 	std::string message;
@@ -35,7 +35,8 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	//message = "User " + nick_name + " has been kicked from channel.";
 	
 	message = channel_name + " " + nick_name;
-	
+	if (!comment.empty())
+		message += " :" + comment;
 	for (t = 0; t < ch_iter->users.size(); t++)
 		client_message_in_channel(irc, *ch_iter, i, (int)t, "KICK", message);
 	// Remove user from list of user and in case from operator users if user is an operator

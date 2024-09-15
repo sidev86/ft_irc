@@ -116,7 +116,7 @@ void    colored_message(const std::string message, const std::string color);
 void    welcome_msg(ft_irc &irc, int i);
 void    send_error_message(ft_irc &irc, int i, const std::string err_code, const std::string &message, int sock);
 void    nick_command(ft_irc &irc, int i);
-void	kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& user_name);
+void	kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name, const std::string& comment); 
 void	topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& new_topic);
 void	invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& user_name);
 void    join_command(ft_irc& irc, int i, const std::string& channel_names, const std::string& user_name, const std::string& key);

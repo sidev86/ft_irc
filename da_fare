@@ -73,10 +73,12 @@ DUBBI
 
 14/09/24
 
-- Testare TOPIC (logica corretta? + commenti con più parole)
-- Notifica JOIN a utenti canale
-- Fixare problema KICK in konversation
+- Testare TOPIC (logica corretta? + commenti con più parole) => DONE ?
+- Notifica JOIN a utenti canale => DONE
+- Fixare problema KICK in konversation => DONE
 - KICK -> aggiungere gestione commento
+
+
 
 
 	

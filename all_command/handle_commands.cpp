@@ -22,7 +22,7 @@ int check_number_of_arguments(std::string command)
 
 	while (ss >> word)
 		num_args++;
-	if (first_wd == "KICK" && (num_args == 2 || is_comment(command) == 0))
+	if (first_wd == "KICK" && ((num_args > 2 && is_comment(command) == 0) || num_args == 2))
 		return 1;
 	else if (first_wd == "TOPIC" && ((num_args > 1 && is_comment(command) == 0) || num_args == 1))
 		return 1;
@@ -53,7 +53,7 @@ void	send_to_command_function(ft_irc& irc, int i)
 		index++;
 	
 	if (word == "KICK")
-		kick_command(irc, i, irc.client[i].nick, args[0], args[1]);
+		kick_command(irc, i, irc.client[i].nick, args[0], args[1], extract_message(second_command(irc)));
 	else if (word == "TOPIC")
 		topic_command(irc, i,  irc.client[i].nick, args[0], extract_message(second_command(irc)));
 	else if (word == "INVITE")

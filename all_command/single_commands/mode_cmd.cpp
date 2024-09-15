@@ -40,23 +40,39 @@ int param_is_numeric(const std::string& param)
 	return 1;
 }
 
-int set_users_limit_mode(const std::string& option, Channel& channel, const std::string& option_param)
+int set_users_limit_mode(ft_irc& irc, int i, const std::string& option, Channel& channel, const std::string& option_param)
 {
 	int num_users;
 	std::string message;
 	
 	if (option[0] == '-')
 	{
-		channel.users_limit = false;
-		channel._max_users = -1;
+		if (!option_param.empty())
+		{
+			send_error_message(irc, i, "461", ":Not enough parameters.", irc.client[i].client_sock);
+			return 0;
+		}
+		else
+		{
+			channel.users_limit = false;
+			channel._max_users = -1;
+		}
 	}
 	else if (option[0] == '+')
 	{
+		if (option_param.empty())
+		{
+			send_error_message(irc, i, "461", ":Not enough parameters.", irc.client[i].client_sock);
+			return 0;
+		}
 		channel.users_limit = true;
 		
 		//Check if the parameter is numeric
 		if (!param_is_numeric(option_param))
+		{
+			send_error_message(irc, i, "", " :MODE +l: Invalid parameter value.", irc.client[i].client_sock);
 			return 0;
+		}
 		std::stringstream(option_param) >> num_users;
 		channel._max_users = num_users;
 	}
@@ -65,6 +81,8 @@ int set_users_limit_mode(const std::string& option, Channel& channel, const std:
 
 int set_key_mode(const std::string& option, Channel& channel, const std::string& key, ft_irc& irc, int i)
 {
+	std::string message;
+	
 	if (option[0] == '-')
 	{
 		channel.has_key = false;
@@ -74,7 +92,7 @@ int set_key_mode(const std::string& option, Channel& channel, const std::string&
 	{
 		if (channel.has_key == true)
 		{
-			std::string message = channel._name + " :Channel key already set";
+			message = channel._name + " :Channel key already set";
 			send_error_message(irc, i, "467", message, irc.client[i].client_sock);
 			return 1;
 		}
@@ -204,17 +222,8 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 		set_topic_mode(option, *ch_iter);
 	else if (option[1] == 'l')
 	{
-		if (option_param.empty())
-		{
-			send_error_message(irc, i, "461", ":Not enough parameters.", irc.client[i].client_sock);
-			return;
-		}
-		if (!set_users_limit_mode(option, *ch_iter, option_param))
-		{
-			message = option + " :mode +l: Invalid parameter value.";
-			send_error_message(irc, i, "", message, irc.client[i].client_sock);
-			return;
-		}
+		if (!set_users_limit_mode(irc, i, option, *ch_iter, option_param))		
+			return;	
 	}
 	else if (option[1] == 'k')
 	{
@@ -237,6 +246,8 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	}
 	ch_iter->flags = ch_iter->flags + option[1];
  	message = ch_iter->_name + " " + option;
+ 	if (option[1] == 'o')
+ 		message += " " + option_param;
 	for (t = 0; t < ch_iter->users.size(); t++)
 		client_message_in_channel(irc, *ch_iter, i, (int)t, "MODE", message);
 }
