@@ -1,46 +1,44 @@
 #include "../header/ft_irc.hpp"
 
-/*
-se crei 2 client ogniuno crea il suo canale e
-esempio
-client 1 #SAS
-client 2 #SOS
-e client 1 entra in #SOS
-e client 2 entra in #SAS
-se poi il primo client esce.
-poi non posso creare una altra connessione con lo stesso perche non mi entra in accepts_connection
-e leakka perche indice del client e negativo
-*/
+
 int process_incoming_data(ft_irc &irc, int i)
 {
     if (irc.server_suspended)
         return 0;
     ssize_t bytes = recv(irc.p_fds[i].fd, irc.buffer, sizeof(irc.buffer) - 1, 0);
-    if (bytes <= 0)
+    i--;
+    if (bytes >= 511)
+        return 1;
+    if (bytes < 0)
     {
-        close(irc.p_fds[i].fd);
-        irc.p_fds.erase(irc.p_fds.begin() + i);
-        irc.client.erase(irc.client.begin() + i);
-
-        if (bytes < 0)
-        {
-            perror("recv");
-            std::cerr << "🚨Error: (connection closed)🚨" << std::endl;
-        }
-
+        perror("recv");
         return 1;
     }
-
+    else if (bytes == 0)
+    {
+        irc.buffer_d.clear();
+        quitting_channels(irc, i);
+        return 1;
+    }
     irc.buffer[bytes] = '\0';
+    if (bytes > 0 && irc.buffer[bytes - 1] != '\n')
+    {
+        irc.buffer_d.append(irc.buffer, strlen(irc.buffer));
+        send(irc.client[i].client_sock, "^D", 2, 0);
+        return 0;
+    }
+    else
+    {
+        irc.buffer_d.append(irc.buffer, strlen(irc.buffer));
+        strcpy(irc.buffer, irc.buffer_d.c_str());
+        irc.buffer_d.clear();
+    }
     if (first_command(irc) == "CAP" && trim(second_command(irc)) == "LS 302")
         return 0;
-
     if (handle_command(irc, i) == 1)
         return 1;
-
     return 0;
 }
-
 
 int accept_connections(ft_irc &irc)
 {
@@ -137,6 +135,7 @@ int poll_and_handle(ft_irc &irc)
 
 int handle_client(ft_irc &irc)
 {
+	
     if (irc.server_suspended)
         return 0;
     if (poll_and_handle(irc) == 1)

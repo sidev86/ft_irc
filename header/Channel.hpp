@@ -20,7 +20,7 @@ class Channel
 	    int _num_users;
 	    int _max_users;
 
-	    std::vector<client_info> users; // Usa client_info qui
+	    std::vector<client_info> users;
 	    std::vector<client_info> operatorUsers;
 	    std::vector<client_info> invitedUsers;
 		std::vector<std::string> flag_o;
@@ -42,15 +42,17 @@ class Channel
 			return operatorUsers.size();
 		}
 
-	    bool channelHasName(const std::string& name) const;
-		bool isMember(const client_info& user);
-
-	    void DeleteUserFromChannel(ft_irc& irc, int i);
-	    void addUser(ft_irc &irc, int i);
-	    void addOperatorUser(const std::string& oper_name, const std::string& nick);
-	    void removeUser(const std::string& nick);
-		void removeOperator(const std::string& oper);
-		void removeInvited(const std::string& invited);
+	    bool	channelHasName(const std::string& name) const;
+		bool	isMember(const client_info& user);
+		bool	isMemberOperator(const client_info& user_operator);
+	    
+		void	DeleteUserFromChannel(ft_irc& irc, int i);
+		void	next_operator(void);
+	    void	addUser(ft_irc &irc, int i);
+	    void	addOperatorUser(const std::string& oper_name, const std::string& nick, int sock);
+	    void	removeUser(const std::string& nick);
+		void	removeOperator(const std::string& oper);
+		void	removeInvited(const std::string& invited);
 		
 		~Channel();
 };

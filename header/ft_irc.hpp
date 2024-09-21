@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <iterator>
 #include <signal.h>
+#include <queue>
 #include "Channel.hpp"
 
 class Channel;
@@ -37,6 +38,7 @@ class client_info
         std::string host;
         std::string server;
         std::string realname;
+        std::queue<std::string> msg_queue;
         bool    authenticated;
         bool    is_nick;
         bool    is_user;
@@ -68,6 +70,7 @@ class ft_irc
         std::string port;
         std::string pass_server;
         std::string msg;
+        std::string buffer_d;
         std::vector<struct pollfd> p_fds;
         server_info server;
         char buffer[512];
@@ -88,6 +91,7 @@ int     check_number_of_arguments(std::string command);
 int     nick_exist(std::vector<client_info>& clients, const std::string& nickname);
 int     get_user_index(std::vector<client_info>& clients, const std::string& nickname);
 
+std::string user_list(Channel& channel_name);
 std::string first_command(ft_irc irc);
 std::string second_command(ft_irc irc);
 std::string trim(const std::string& str);
@@ -96,8 +100,9 @@ std::string extract_message(const std::string &buffer);
 std::vector<Channel>::iterator	findChannel(const std::string& channel_name, std::vector<Channel>& channels);
 std::vector<client_info>::iterator	findUserInChannel(const std::string& user_name, std::vector<client_info>& users);
 
+void    update_user_list(ft_irc& irc, int i, std::vector<Channel>::iterator it);
+void    quitting_channels(ft_irc& irc, int i, unsigned int t, std::string& message);
 void    client_message_all_users(ft_irc &irc, int i, int t, const std::string &command, const std::string &ex_message);
-void	client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message);
 void    removeChars(std::string& str, const char charsToRemove);
 void    part_command(ft_irc& irc, int i, const std::string& user_name, const std::string& channel_name);
 void    handle_termination(int signal);
@@ -116,12 +121,15 @@ void    colored_message(const std::string message, const std::string color);
 void    welcome_msg(ft_irc &irc, int i);
 void    send_error_message(ft_irc &irc, int i, const std::string err_code, const std::string &message, int sock);
 void    nick_command(ft_irc &irc, int i);
-void	kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name, const std::string& comment); 
+void    kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name, const std::string& comment) ;
 void	topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& new_topic);
 void	invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& user_name);
 void    join_command(ft_irc& irc, int i, const std::string& channel_names, const std::string& user_name, const std::string& key);
 void	mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string option, const std::string& option_param);
 void    privmsg_command(ft_irc& irc, int i, const std::string& target);
+void    client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message);
+void    quitting_channels(ft_irc& irc, int i);
+void    update_channel_list(ft_irc& irc, Channel& channel_name);
 
 bool	isOperator(const std::string& oper_name, std::vector<client_info>& operatorUsers);
 bool	userReceivedInvite(Channel& channel, const std::string& nick);

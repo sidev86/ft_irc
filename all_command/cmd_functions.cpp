@@ -75,7 +75,6 @@ bool userAlreadyInChannel(Channel& channel, const std::string& nick)
 
 void sendToAll(std::vector<client_info>& users, const std::string& message) 
 {
-   std::cout << "message to send to all => " << message << std::endl;
    for (std::vector<client_info>::iterator it = users.begin(); it != users.end(); ++it) 
     {
         if (it->authenticated) 

@@ -58,3 +58,13 @@ std::string trim(const std::string& str)
     // Ritorna la sottostringa tra 'start' e 'end'
     return str.substr(start, end - start + 1);
 }
+
+bool Channel::isMember(const client_info& user)
+{
+    return std::find(users.begin(), users.end(), user) != users.end();
+}
+
+bool Channel::isMemberOperator(const client_info& user_operator)
+{
+    return std::find(operatorUsers.begin(), operatorUsers.end(), user_operator) != operatorUsers.end();
+}

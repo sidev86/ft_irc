@@ -40,33 +40,36 @@ void Channel::addUser(ft_irc &irc, int i)
 void Channel::DeleteUserFromChannel(ft_irc& irc, int i)
 {
     std::string nick = irc.client[i].nick;
-
-    // Rimuovi l'utente da users
-    for (std::vector<client_info>::iterator it = users.begin(); it != users.end(); ++it)
+    if (!operatorUsers.empty())
     {
-        if (it->nick == nick)
+        for (std::vector<client_info>::iterator it = operatorUsers.begin(); it != operatorUsers.end(); ++it)
         {
-            removeUser(nick);
-            break;
+            if (it->nick == nick)
+            {
+                removeOperator(nick);
+                break;
+            }
         }
     }
-
-    // Rimuovi l'utente da operatorUsers
-    for (std::vector<client_info>::iterator it = operatorUsers.begin(); it != operatorUsers.end(); ++it)
+    if (!users.empty())
     {
-        if (it->nick == nick)
+        for (std::vector<client_info>::iterator it = users.begin(); it != users.end(); ++it)
         {
-            removeOperator(nick);
-            break;
+            if (it->nick == nick)
+            {
+                removeUser(nick);
+                break;
+            }
         }
     }
 }
 
-void Channel::addOperatorUser(const std::string& oper_name, const std::string& nick)
+void Channel::addOperatorUser(const std::string& oper_name, const std::string& nick, int sock)
 {
     client_info newOperator;
     newOperator.user = oper_name;
     newOperator.nick = nick;
+    newOperator.client_sock = sock;
     operatorUsers.push_back(newOperator);
 }
 
@@ -78,7 +81,7 @@ void Channel::removeUser(const std::string& nick)
         {
             users.erase(it);
             _num_users--;
-            break;
+            return;
         }
     }
 }
@@ -90,7 +93,6 @@ void Channel::removeOperator(const std::string& oper)
         if (it->nick == oper)
         {
             operatorUsers.erase(it);
-            _num_users--;
             break;
         }
     }
@@ -113,3 +115,8 @@ bool Channel::channelHasName(const std::string& name) const
 	return _name == name;
 }
 
+void    Channel::next_operator(void)
+{
+    if (operatorUsers.empty())
+        addOperatorUser(users[0].user, users[0].nick, users[0].client_sock);
+}

@@ -13,7 +13,7 @@ void    commands(ft_irc &irc, int i)
     	list_command(irc, i);
     else if (first_command(irc) == "PRIVMSG")
     {
-        target = trim(second_command(irc));  // Estrai il target (utente o canale)
+        target = trim(second_command(irc));
         privmsg_command(irc, i, target);
     }
     else
@@ -77,7 +77,7 @@ void    autentication(ft_irc &irc, int i)
         process_pass_command(irc, i);
     else if ((cmd == "PASS" && irc.client[i].is_pass == true) || (cmd == "USER" && irc.client[i].is_user == true))
     {
-        send_error_message(irc, i, "462", ": You are already registered", irc.client[i].client_sock);
+        send_error_message(irc, i, "462", ":You are already registered", irc.client[i].client_sock);
         return ;
     }
     else if (cmd == "NICK")
@@ -103,10 +103,8 @@ int registretion(ft_irc &irc, int i)
     {
         if (first_command(irc) == "PING" || first_command(irc) == "WHO" || first_command(irc) == "USERHOST")
             return (0);
-        std::cout << CYAN <<" Client[" << i << "]: " << RESET;
-        colored_message(irc.buffer, CYAN);
         if (first_command(irc) == "NICK" || first_command(irc) == "USER" || first_command(irc) == "PASS")
-            send_error_message(irc, i, "462", ": You are already registered", irc.client[i].client_sock);
+            send_error_message(irc, i, "462", ":You are already registered", irc.client[i].client_sock);
         else
             commands(irc, i);
     }
@@ -115,7 +113,6 @@ int registretion(ft_irc &irc, int i)
 
 int handle_command(ft_irc &irc, int i)
 {
-    i--;
     if (registretion(irc, i) == 1)
         return (1);
     return 0;

@@ -71,6 +71,24 @@ int non_blocking_server(int sockfd)
     return (0);
 }
 
+void process_queued_messages(ft_irc& irc)
+{
+	std::string message;
+	
+	for (std::vector<client_info>::iterator it = irc.client.begin(); it != irc.client.end(); ++it)
+	{
+		while (!(it->msg_queue.empty()))
+		{
+			message = it->msg_queue.front();
+			ssize_t result = send(it->client_sock, message.c_str(), message.size(), 0);
+			if (result == -1) 
+				break;
+			else
+				it->msg_queue.pop();
+		}
+	}
+}
+
 int handle_server(ft_irc &irc)
 {
     if (create_socket(irc.server.server_sock) == 1)
@@ -88,6 +106,7 @@ int handle_server(ft_irc &irc)
     init_poll(irc, irc.server.server_sock);
     while (irc.server_running)
     {
+    	process_queued_messages(irc);
         if (irc.server_suspended)
         {        
             sleep(1);

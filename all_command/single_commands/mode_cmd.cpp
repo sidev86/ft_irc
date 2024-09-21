@@ -30,7 +30,6 @@ void set_topic_mode(const std::string& option, Channel& channel)
 int param_is_numeric(const std::string& param)
 {
 	int i = 0;
-	
 	while(param[i] != '\0')
 	{
 		if (param[i] < '0' || param[i] > '9')
@@ -38,6 +37,16 @@ int param_is_numeric(const std::string& param)
 		i++;
 	}
 	return 1;
+}
+
+int	check_max(std::string param, Channel &channel)
+{
+	int num;
+	std::stringstream ss(param);
+	ss >> num;
+	if (num == 0 || channel.num_user() > num)
+		return 1;
+	return (0);
 }
 
 int set_users_limit_mode(ft_irc& irc, int i, const std::string& option, Channel& channel, const std::string& option_param)
@@ -65,14 +74,12 @@ int set_users_limit_mode(ft_irc& irc, int i, const std::string& option, Channel&
 			send_error_message(irc, i, "461", ":Not enough parameters.", irc.client[i].client_sock);
 			return 0;
 		}
-		channel.users_limit = true;
-		
-		//Check if the parameter is numeric
-		if (!param_is_numeric(option_param))
+		if (!param_is_numeric(option_param) || check_max(option_param, channel) == 1)
 		{
 			send_error_message(irc, i, "", " :MODE +l: Invalid parameter value.", irc.client[i].client_sock);
 			return 0;
 		}
+		channel.users_limit = true;
 		std::stringstream(option_param) >> num_users;
 		channel._max_users = num_users;
 	}
@@ -195,7 +202,7 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	
 	if (ch_iter->isMember(irc.client[i]) == false)
 	{
-		message = channel_name + " :They're not on that channel";
+		message = channel_name + " :You're not on that channel";
 		send_error_message(irc, i, "442", message, irc.client[i].client_sock);
 		return;
 	}
@@ -203,7 +210,7 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	// Control if who sended cmd is a channel operator
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
 	{
-		message =  ":They're not channel operator.";
+		message =  ":You're not channel operator.";
 		send_error_message(irc, i, "482", message, irc.client[i].client_sock);
 		return;
 	}

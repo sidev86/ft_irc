@@ -9,20 +9,29 @@ void client_message(ft_irc &irc, int i, const std::string &command, const std::s
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
     message = message + " " + ex_message;
     message = message + "\r\n";
-    send(irc.client[i].client_sock, message.c_str(), message.length(), 0);
+    ssize_t result = send(irc.client[i].client_sock, message.c_str(), message.length(), 0);
+    if (result == -1)
+    {
+    	irc.client[i].msg_queue.push(message.c_str());
+    }
+    
 }
 
 void client_message_all_users(ft_irc &irc, int i, int t, const std::string &command, const std::string &ex_message)
 {
     (void)i;
     std::string message;
-if (command.empty())
+    if (command.empty())
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
     else
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
-    message = message + " " + ex_message;
-    message = message + "\r\n";
-    send(irc.client[t].client_sock, message.c_str(), message.length(), 0);
+    message += " " + ex_message;
+    message += "\r\n";
+    ssize_t result = send(irc.client[t].client_sock, message.c_str(), message.length(), 0);
+    if (result == -1)
+    {
+    	irc.client[t].msg_queue.push(message.c_str());
+    }
 }
 
 void client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message)
@@ -51,13 +60,13 @@ void welcome_msg(ft_irc &irc, int i)
 {
     std::string buffer;
 
-    buffer = irc.client[i].nick + " :Welcome to the Internet Relay Network " + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
+    buffer = " :Welcome to the Internet Relay Network " + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
     send_error_message(irc, i, "001", buffer, irc.client[i].client_sock);
-    buffer =irc.client[i].nick + " :Your host is " + irc.client[i].server + ", running version 1.0.0";
+    buffer =" :Your host is " + irc.client[i].server + ", running version 1.0.0";
     send_error_message(irc, i, "002", buffer, irc.client[i].client_sock);
-    buffer = irc.client[i].nick + " :This server was created on " + __DATE__ + " at " + __TIME__;
+    buffer = " :This server was created on " + std::string(__DATE__) + " at " + std::string(__TIME__);
     send_error_message(irc, i, "003", buffer, irc.client[i].client_sock);
-    buffer = irc.client[i].nick + " " + irc.client[i].server + " 1.0.0 ao mtov";
+    buffer = " " + irc.client[i].server + " 1.0.0 ao mtov";
     send_error_message(irc, i, "004", buffer, irc.client[i].client_sock);
 }
 

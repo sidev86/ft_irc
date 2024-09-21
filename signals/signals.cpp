@@ -7,8 +7,10 @@ extern ft_irc global_irc;
 
 void handle_sigtstp(int signal)
 {
-    (void)signal; // Suppress unused parameter warning
-
+     std::cout << "Caught SIGTSTP (Ctrl+Z), suspending process... " << signal << std::endl;
+     
+    /*(void)signal; // Suppress unused parameter warning
+	std::cout << "Handle SIGTSTP" << std::endl;
     if (!global_irc.server_suspended) 
     {
         std::cout << "Received SIGTSTP (Ctrl+Z), suspending server..." << std::endl;
@@ -24,7 +26,7 @@ void handle_sigtstp(int signal)
         std::string resume_msg = "Server has resumed.\n";
         for (size_t i = 0; i < global_irc.client.size(); ++i)
             send(global_irc.client[i].client_sock, resume_msg.c_str(), resume_msg.size(), 0);
-    }
+    }*/
 }
 
 void handle_termination(int signal)

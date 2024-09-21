@@ -15,7 +15,7 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 	
 	if (ch_iter->isMember(irc.client[i]) == false)
 	{
-		message = channel_name + " :They're not on that channel";
+		message = channel_name + " :You're not on that channel";
 		send_error_message(irc, i, "442", message, irc.client[i].client_sock);
 		return;
 	}
@@ -31,7 +31,7 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 	// Control if who sended cmd is a channel operator
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
 	{
-		message =  ":They're not channel operator.";
+		message =  ":You're not channel operator.";
 		send_error_message(irc, i, "482", message, irc.client[i].client_sock);
 		return;
 	}
@@ -53,9 +53,9 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 		
 		ch_iter->invitedUsers.push_back(irc.client[i2]);
 		message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
-		message =  message + " INVITE " + nick_name + " :" + channel_name + "\n";
-    		send(irc.client[i2].client_sock, message.c_str(), message.length(), 0);
+		message =  message + " INVITE " + nick_name + " :" + channel_name + "\r\n";
+    	send(irc.client[i2].client_sock, message.c_str(), message.length(), 0);
 	}
-	std::string invite = irc.client[i2].nick + " " + channel_name;
+	std::string invite = " " + channel_name;
 	send_error_message(irc, i, "341", invite, irc.client[i].client_sock);
 }
