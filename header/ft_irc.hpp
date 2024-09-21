@@ -38,7 +38,6 @@ class client_info
         std::string host;
         std::string server;
         std::string realname;
-        std::queue<std::string> msg_queue;
         bool    authenticated;
         bool    is_nick;
         bool    is_user;

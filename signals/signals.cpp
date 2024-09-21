@@ -10,7 +10,7 @@ void handle_sigtstp(int signal)
      std::cout << "Caught SIGTSTP (Ctrl+Z), suspending process... " << signal << std::endl;
      
     (void)signal; // Suppress unused parameter warning
-	std::cout << "Handle SIGTSTP" << std::endl;
+    std::cout << "Handle SIGTSTP" << std::endl;
     if (!global_irc.server_suspended) 
     {
         std::cout << "Received SIGTSTP (Ctrl+Z), suspending server..." << std::endl;

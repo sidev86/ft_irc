@@ -9,12 +9,7 @@ void client_message(ft_irc &irc, int i, const std::string &command, const std::s
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
     message = message + " " + ex_message;
     message = message + "\r\n";
-    ssize_t result = send(irc.client[i].client_sock, message.c_str(), message.length(), 0);
-    if (result == -1)
-    {
-    	irc.client[i].msg_queue.push(message.c_str());
-    }
-    
+    send(irc.client[i].client_sock, message.c_str(), message.length(), 0);
 }
 
 void client_message_all_users(ft_irc &irc, int i, int t, const std::string &command, const std::string &ex_message)
@@ -27,11 +22,7 @@ void client_message_all_users(ft_irc &irc, int i, int t, const std::string &comm
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
     message += " " + ex_message;
     message += "\r\n";
-    ssize_t result = send(irc.client[t].client_sock, message.c_str(), message.length(), 0);
-    if (result == -1)
-    {
-    	irc.client[t].msg_queue.push(message.c_str());
-    }
+     send(irc.client[t].client_sock, message.c_str(), message.length(), 0);
 }
 
 void client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message)
