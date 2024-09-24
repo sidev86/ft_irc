@@ -6,9 +6,9 @@ std::vector<Channel>::iterator findChannel(const std::string& channel_name, std:
     for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); ++it) 
     {
         if (it->channelHasName(channel_name)) 
-            return it;  // Canale trovato
+            return it;
     }
-    return channels.end();  // Canale non trovato
+    return channels.end();
 }	
 	
 std::vector<client_info>::iterator findUserInChannel(const std::string& nick, std::vector<client_info>& users) 

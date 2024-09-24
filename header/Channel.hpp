@@ -24,8 +24,7 @@ class Channel
 	    std::vector<client_info> operatorUsers;
 	    std::vector<client_info> invitedUsers;
 		std::vector<std::string> flag_o;
-		
-	    //MODES
+
 	    bool invite_only;
 	    bool has_password;
 	    bool topic_limited;

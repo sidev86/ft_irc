@@ -1,7 +1,5 @@
 #include "../../header/ft_irc.hpp"
 
-/*il topic puo essere cambiato da tutti lunico limite e +t 
-in mode che non lo fa cambiate da tutti ma solo operator*/
 void set_view_topic(ft_irc& irc, int i, Channel& channel, const std::string new_topic)
 {
 	std::string message;
@@ -44,7 +42,7 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 		oper_it = findUserInChannel(oper_name, it->users);
 	else
 	{
-		send_error_message(irc, i, "403", ":No such channel.", irc.client[i].client_sock);
+		send_error_message(irc, i, "403", channel_name + " :No such channel", irc.client[i].client_sock);
 		return;
 	}
 	if (new_topic.empty() && second_command(irc).find(":") == std::string::npos)
@@ -52,7 +50,7 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 		show_topic(irc, i, channel_name, message,  *it);
 		return ; 
 	}
-	message = it->_name + " :You're not on that channel";
+	message = it->_name + " :You’re not on that channel";
 	if (it->topic_limited)
 	{
 		if (findUserInChannel(oper_name, it->users) == it->users.end())
@@ -62,7 +60,7 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 		}
 		if (!new_topic.empty() && !isOperator(oper_name, it->operatorUsers))
 		{
-			send_error_message(irc, i, "482", ":You're not channel operator.", irc.client[i].client_sock);
+			send_error_message(irc, i, "482", channel_name + ":You’re not channel operator", irc.client[i].client_sock);
 			return;
 		}
 		else

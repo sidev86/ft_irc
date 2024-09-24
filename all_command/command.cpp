@@ -23,67 +23,19 @@ void    commands(ft_irc &irc, int i)
 void    autentication(ft_irc &irc, int i)
 {
     std::string cmd = first_command(irc);
-    //da levare poi
-    if (cmd == "SKIP")
-    {
-        irc.client[i].authenticated = true;
-        irc.client[i].nick = "NICK";
-        irc.client[i].user = "USER";
-        irc.client[i].realname = "anonymous";
-        irc.client[i].server = "server";
-        irc.client[i].host = "localhost";
-        welcome_msg(irc, i);
-        return ;
-    }
-    else if (cmd == "SKIP1")
-    {
-        irc.client[i].authenticated = true;
-        irc.client[i].nick = "NICK1";
-        irc.client[i].user = "USER1";
-        irc.client[i].realname = "anonymous1";
-        irc.client[i].server = "server1";
-        irc.client[i].host = "localhost1";
-        welcome_msg(irc, i);
-        return ;
-
-    }
-    if (cmd == "SKIP2")
-    {
-        irc.client[i].authenticated = true;
-        irc.client[i].nick = "NICK2";
-        irc.client[i].user = "USER2";
-        irc.client[i].realname = "anonymous2";
-        irc.client[i].server = "server2";
-        irc.client[i].host = "localhost2";
-        welcome_msg(irc, i);
-        return ;
-    }
-    else if (cmd == "SKIP3")
-    {
-        irc.client[i].authenticated = true;
-        irc.client[i].nick = "NICK3";
-        irc.client[i].user = "USER3";
-        irc.client[i].realname = "anonymous3";
-        irc.client[i].server = "server3";
-        irc.client[i].host = "localhost3";
-        welcome_msg(irc, i);
-        return ;
-
-    }
-    std::string message = cmd + " :You have not registered";
+    std::string message =" :You have not registered";
     if (cmd == "\0")
         return ;
     if (cmd == "PASS" && irc.client[i].is_pass == false)
         process_pass_command(irc, i);
     else if ((cmd == "PASS" && irc.client[i].is_pass == true) || (cmd == "USER" && irc.client[i].is_user == true))
     {
-        send_error_message(irc, i, "462", ":You are already registered", irc.client[i].client_sock);
+        send_error_message(irc, i, "462", ":You may not reregister", irc.client[i].client_sock);
         return ;
     }
-    else if (cmd == "NICK")
-    
+    else if (cmd == "NICK" && irc.client[i].is_pass == true)
         nick_command(irc, i);
-    else if (cmd == "USER")
+    else if (cmd == "USER" && irc.client[i].is_pass == true)
         user_command(irc, i);
     else
         send_error_message(irc, i, "451", message, irc.client[i].client_sock);
@@ -101,10 +53,16 @@ int registretion(ft_irc &irc, int i)
         autentication(irc, i);
     else
     {
-        if (first_command(irc) == "PING" || first_command(irc) == "WHO" || first_command(irc) == "USERHOST")
+        //std::cout << "client = " << irc.buffer << std::endl;
+        if (first_command(irc) == "PING")
+        {
+            const std::string &messages = "PONG :" + second_command(irc);
+            send(irc.client[i].client_sock, messages.c_str(), messages.size(), 0);
+        }
+        if (first_command(irc) == "WHO" || first_command(irc) == "USERHOST")
             return (0);
         if (first_command(irc) == "NICK" || first_command(irc) == "USER" || first_command(irc) == "PASS")
-            send_error_message(irc, i, "462", ":You are already registered", irc.client[i].client_sock);
+            send_error_message(irc, i, "462", ":You may not reregister", irc.client[i].client_sock);
         else
             commands(irc, i);
     }

@@ -32,7 +32,7 @@ int	join_to_channel(ft_irc& irc, Channel& channel, const std::string& nick, int 
 	}
 	else
 	{
-		irc.msg = " " + channel._name + " :You are already on channel";
+		irc.msg = nick + " " + channel._name + " :is already on channel";
 		send_error_message(irc, i, "443", irc.msg, irc.client[i].client_sock);
 		return (0);
 	}
@@ -93,7 +93,7 @@ int join_on_existing_channel(ft_irc& irc, int i, const std::string& channel_name
 	std::vector<client_info>::iterator user_it = findUserInChannel(nick, it->users);
 	if (user_it != it->users.end())
 	{
-		irc.msg =" " + it->_name + " :You are already on channel";
+		irc.msg = nick + " " + it->_name + " :is already on channel";
 		send_error_message(irc, i, "443", irc.msg, irc.client[i].client_sock);
 		return (0);
 	}	
@@ -140,7 +140,7 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
     }
 	if (!check_channel_name(channel_name))
 	{
-		irc.msg = ":No such channel";
+		irc.msg = channel_name + " :No such channel";
 		send_error_message(irc, i, "403", irc.msg, irc.client[i].client_sock);
 		return;
 	}
@@ -149,7 +149,7 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 	{
 		if (!key.empty())
 		{
-			send_error_message(irc, i, "461", ":Not enough parameters.", irc.client[i].client_sock);
+			send_error_message(irc, i, "461", "", irc.client[i].client_sock);
 			return;
 		}
 		create_channel(irc, i, channel_name, nick, it);
@@ -158,7 +158,7 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 	{
 		if (!key.empty() && it->has_key == false)
 		{
-			send_error_message(irc, i, "461", ":Not enough parameters.", irc.client[i].client_sock);
+			send_error_message(irc, i, "461", "", irc.client[i].client_sock);
 			return;
 		}
 		if (!join_on_existing_channel(irc, i, channel_name, nick, it, key))

@@ -22,7 +22,7 @@ void client_message_all_users(ft_irc &irc, int i, int t, const std::string &comm
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
     message += " " + ex_message;
     message += "\r\n";
-     send(irc.client[t].client_sock, message.c_str(), message.length(), 0);
+    send(irc.client[t].client_sock, message.c_str(), message.length(), 0);
 }
 
 void client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message)

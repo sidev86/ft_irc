@@ -70,22 +70,19 @@ void	send_to_command_function(ft_irc& irc, int i)
 
 void	operator_command(ft_irc& irc, int i)
 {
-	//splittare il buffer ovvero il comando, contare gli argomenti del comando e se sono
-	//più di quelli previsti dò errore
 	if (!check_number_of_arguments(irc.buffer))
 	{
-		send_error_message(irc, i, "461", ":Not enough parameters.", irc.client[i].client_sock);
+		send_error_message(irc, i, "461", first_command(irc) + ":Not enough parameters", irc.client[i].client_sock);
 		return;
 	}	
 	send_to_command_function(irc, i);
-	//se il numero di argomenti è giusto richiamo funzione che esegue istruzioni relative al comando
 }
 
 void	channel_command(ft_irc& irc, int i)
 {
 	if (!check_number_of_arguments(irc.buffer))
 	{
-		send_error_message(irc, i, "461", ":Not enough parameters.", irc.client[i].client_sock);
+		send_error_message(irc, i, "461", first_command(irc) + ":Not enough parameters", irc.client[i].client_sock);
 		return;
 	}
 	send_to_command_function(irc, i);

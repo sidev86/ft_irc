@@ -1,6 +1,5 @@
 #include "../header/ft_irc.hpp"
 
-
 int process_incoming_data(ft_irc &irc, int i)
 {
     if (irc.server_suspended)
@@ -135,7 +134,6 @@ int poll_and_handle(ft_irc &irc)
 
 int handle_client(ft_irc &irc)
 {
-	
     if (irc.server_suspended)
         return 0;
     if (poll_and_handle(irc) == 1)

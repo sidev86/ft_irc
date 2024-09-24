@@ -1,28 +1,19 @@
 #include "../../header/ft_irc.hpp"
 
-/*sisteamre la stampa della lista di utenti se un utente esce dal canale
-konversationfa roba strana*/
-
 void part_command(ft_irc& irc, int i, const std::string& nick, const std::string& channel_name)
 {
 	std::string message;
 	long unsigned int t;
-	
-	//std::cout << nick << " PART COMMAND " << channel_name << std::endl;
-	
-	// Check if channel exists
 	std::vector<Channel>::iterator ch_iter = findChannel(channel_name, irc.channels);
 	if (ch_iter == irc.channels.end()) 
 	{
-		send_error_message(irc, i, "403", ":No such channel.", irc.client[i].client_sock);
+		send_error_message(irc, i, "403", ch_iter->_name + ":No such channel", irc.client[i].client_sock);
 		return;
 	}
-	
-	// Find the user in channel
 	std::vector<client_info>::iterator user_it = findUserInChannel(nick, ch_iter->users);
 	if (user_it == ch_iter->users.end()) 
 	{
-		send_error_message(irc, i, "441", ":You're not on that channel.", irc.client[i].client_sock);
+		send_error_message(irc, i, "441", ch_iter->_name + " :You’re not on that channel", irc.client[i].client_sock);
 		return;
 	}
 	message =  channel_name;

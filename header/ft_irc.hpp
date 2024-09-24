@@ -25,7 +25,6 @@
 #include <algorithm>
 #include <iterator>
 #include <signal.h>
-#include <queue>
 #include "Channel.hpp"
 
 class Channel;
@@ -78,6 +77,7 @@ class ft_irc
         bool server_suspended;
         bool server_running;
 };
+
 int     handle_server(ft_irc &irc);
 int     handle_client(ft_irc &irc);
 int     handle_command(ft_irc &irc, int i);
@@ -89,6 +89,7 @@ int     non_blocking_server(int sockfd);
 int     check_number_of_arguments(std::string command);
 int     nick_exist(std::vector<client_info>& clients, const std::string& nickname);
 int     get_user_index(std::vector<client_info>& clients, const std::string& nickname);
+int     find_char(const std::string &str, char char_to_find);
 
 std::string user_list(Channel& channel_name);
 std::string first_command(ft_irc irc);
@@ -100,7 +101,6 @@ std::vector<Channel>::iterator	findChannel(const std::string& channel_name, std:
 std::vector<client_info>::iterator	findUserInChannel(const std::string& user_name, std::vector<client_info>& users);
 
 void    update_user_list(ft_irc& irc, int i, std::vector<Channel>::iterator it);
-void    quitting_channels(ft_irc& irc, int i, unsigned int t, std::string& message);
 void    client_message_all_users(ft_irc &irc, int i, int t, const std::string &command, const std::string &ex_message);
 void    removeChars(std::string& str, const char charsToRemove);
 void    part_command(ft_irc& irc, int i, const std::string& user_name, const std::string& channel_name);
@@ -130,8 +130,10 @@ void    client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, c
 void    quitting_channels(ft_irc& irc, int i);
 void    update_channel_list(ft_irc& irc, Channel& channel_name);
 
+bool    nickmember(const std::string nick, Channel &channel);
 bool	isOperator(const std::string& oper_name, std::vector<client_info>& operatorUsers);
 bool	userReceivedInvite(Channel& channel, const std::string& nick);
 bool    userAlreadyInChannel(Channel& channel, const std::string& nick);
+bool    clienthadnick(const std::string nick, ft_irc &irc);
 
 #endif
