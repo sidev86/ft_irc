@@ -38,7 +38,7 @@ int check_realname(ft_irc &irc, int i, std::string &error_msg)
 int handle_user(ft_irc &irc, int i)
 {
     std::string error_msg;
-    error_msg = first_command(irc) + " :Not enough parameters";
+    error_msg = first_command(irc) + " :  parameters";
     std::stringstream ss(trim(second_command(irc)));
     ss >> irc.client[i].user >> irc.client[i].host >> irc.client[i].server;
     std::getline(ss, irc.client[i].realname);

@@ -72,7 +72,7 @@ int set_users_limit_mode(ft_irc& irc, int i, const std::string& option, Channel&
 	{
 		if (!option_param.empty())
 		{
-			send_error_message(irc, i, "461", first_command(irc) + ":Not enough parameters", irc.client[i].client_sock);
+			send_error_message(irc, i, "461", first_command(irc) + " :Not enough parameters", irc.client[i].client_sock);
 			return 0;
 		}
 		else
@@ -86,12 +86,12 @@ int set_users_limit_mode(ft_irc& irc, int i, const std::string& option, Channel&
 	{
 		if (option_param.empty())
 		{
-			send_error_message(irc, i, "461", first_command(irc) + ":Not enough parameters", irc.client[i].client_sock);
+			send_error_message(irc, i, "461", first_command(irc) + " :Not enough parameters", irc.client[i].client_sock);
 			return 0;
 		}
 		if (!param_is_numeric(option_param) || check_max(option_param, channel) == 1)
 		{
-			send_error_message(irc, i, "", " :MODE +l: Invalid parameter value", irc.client[i].client_sock);
+			send_error_message(irc, i, "", ":MODE +l: Invalid parameter value", irc.client[i].client_sock);
 			return 0;
 		}
 		if (find_char(channel.flags, 'l') == 0 )
@@ -117,7 +117,7 @@ int set_key_mode(const std::string& option, Channel& channel, const std::string&
 	{
 		if (channel.has_key == true)
 		{
-			message = channel._name + " :Channel key already set";
+			message = channel._name + ":Channel key already set";
 			send_error_message(irc, i, "467", message, irc.client[i].client_sock);
 			return 1;
 		}
@@ -130,7 +130,7 @@ int set_key_mode(const std::string& option, Channel& channel, const std::string&
 		}
 		else
 		{
-			send_error_message(irc, i, "461", first_command(irc) + ":Not enough parameters", irc.client[i].client_sock);
+			send_error_message(irc, i, "461", first_command(irc) + " :Not enough parameters", irc.client[i].client_sock);
 			return 1;
 		}
 	}
@@ -201,15 +201,13 @@ void show_mode(ft_irc& irc, int i2, const std::string& channel_name)
 
 void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string option, const std::string& option_param)
 {
-	std::cout << oper_name << std::endl;
-	std::cout << option << std::endl;
-	std::cout << option_param << std::endl;
 	std::string message;
 	unsigned long int t;
 	std::vector<Channel>::iterator ch_iter = findChannel(channel_name, irc.channels);
 	if (ch_iter == irc.channels.end()) 
 	{
-		send_error_message(irc, i, "403", channel_name + " :No such channel", irc.client[i].client_sock);
+		message = ":No such channel";
+		send_error_message(irc, i, "403", channel_name + " " + message, irc.client[i].client_sock);
 		return;
 	}
 	if (option.empty())
@@ -224,7 +222,7 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	}
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
 	{
-		message =  ch_iter->_name + ":You’re not channel operator";
+		message =  ch_iter->_name + " :You’re not channel operator";
 		send_error_message(irc, i, "482", message, irc.client[i].client_sock);
 		return;
 	}
@@ -255,12 +253,12 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	{
 		if (option_param.empty())
 		{
-			send_error_message(irc, i, "461", first_command(irc) + ":Not enough parameters", irc.client[i].client_sock);
+			send_error_message(irc, i, "461", first_command(irc) + " :Not enough parameters", irc.client[i].client_sock);
 			return;
 		}
 		else if (!set_operator_mode(option, *ch_iter, option_param))
 		{
-			send_error_message(irc, i, "401", "", irc.client[i].client_sock);
+			send_error_message(irc, i, "401", option_param + " :No such nick/channel", irc.client[i].client_sock);
 			return;
 		}
 		ch_iter->flag_o.push_back(option_param);

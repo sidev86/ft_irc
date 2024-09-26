@@ -51,13 +51,13 @@ void welcome_msg(ft_irc &irc, int i)
 {
     std::string buffer;
 
-    buffer = " :Welcome to the Internet Relay Network " + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
+    buffer = ":Welcome to the Internet Relay Network " + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
     send_error_message(irc, i, "001", buffer, irc.client[i].client_sock);
-    buffer =" :Your host is " + irc.client[i].server + ", running version 1.0.0";
+    buffer =":Your host is " + irc.client[i].server + ", running version 1.0.0";
     send_error_message(irc, i, "002", buffer, irc.client[i].client_sock);
-    buffer = " :This server was created on " + std::string(__DATE__) + " at " + std::string(__TIME__);
+    buffer = ":This server was created on " + std::string(__DATE__) + " at " + std::string(__TIME__);
     send_error_message(irc, i, "003", buffer, irc.client[i].client_sock);
-    buffer = " " + irc.client[i].server + " 1.0.0 ao mtov";
+    buffer = irc.client[i].server + " 1.0.0 ao mtov";
     send_error_message(irc, i, "004", buffer, irc.client[i].client_sock);
 }
 

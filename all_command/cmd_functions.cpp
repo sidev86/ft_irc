@@ -72,15 +72,3 @@ bool userAlreadyInChannel(Channel& channel, const std::string& nick)
 	}
 	return 0;
 }
-
-void sendToAll(std::vector<client_info>& users, const std::string& message) 
-{
-   for (std::vector<client_info>::iterator it = users.begin(); it != users.end(); ++it) 
-    {
-        if (it->authenticated) 
-        {
-            if (send(it->client_sock, message.c_str(), message.size(), 0) == -1) 
-                std::cerr << "Error in send notification message to user with socket fd " << it->client_sock << std::endl;
-        }
-    }
-}

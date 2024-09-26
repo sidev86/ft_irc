@@ -22,7 +22,7 @@ void multi_list(ft_irc& irc, int i, std::string channel_list)
         else
         {
             num = "403";
-            message =" " + single_channel + " :No such channel";
+            message =single_channel + " :No such channel";
         }
         send_error_message(irc, i, num, message, irc.client[i].client_sock);
     }
@@ -31,11 +31,11 @@ void multi_list(ft_irc& irc, int i, std::string channel_list)
 
 void	list_command(ft_irc& irc, int i)
 {
-    std::string message = " Channel :Users Name";
+    std::string message = "Channel :Users Name";
     send_error_message(irc, i, "321", message, irc.client[i].client_sock);
     if (irc.channels.empty())
     {
-        message =" :End of /LIST";
+        message =":End of /LIST";
         send_error_message(irc, i, "323", message, irc.client[i].client_sock);
         return;
     }
@@ -50,10 +50,10 @@ void	list_command(ft_irc& irc, int i)
         {
             std::stringstream ss;
             ss << it->_num_users;
-            message = " " + it->_name + " " + ss.str() + " :" + it->_topic;
+            message =it->_name + " " + ss.str() + " :" + it->_topic;
             send_error_message(irc, i, "322", message, irc.client[i].client_sock);
         }
     }
-    message =" :End of /LIST";
+    message =":End of /LIST";
     send_error_message(irc, i, "323", message, irc.client[i].client_sock);
 }

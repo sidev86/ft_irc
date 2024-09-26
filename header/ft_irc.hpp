@@ -107,7 +107,6 @@ void    part_command(ft_irc& irc, int i, const std::string& user_name, const std
 void    handle_termination(int signal);
 void    handle_sigtstp(int signal);
 void	list_command(ft_irc& irc, int i);
-void	sendToAll(std::vector<client_info>& users, const std::string& message);
 void	operator_command(ft_irc& irc, int i);
 void	channel_command(ft_irc& irc, int i);
 void	send_to_command_function(ft_irc& irc, int i);
@@ -118,7 +117,6 @@ void    send_error_message(ft_irc &irc, int i, const std::string err_code, const
 void    init_poll(ft_irc &irc, int &sock);
 void    colored_message(const std::string message, const std::string color);
 void    welcome_msg(ft_irc &irc, int i);
-void    send_error_message(ft_irc &irc, int i, const std::string err_code, const std::string &message, int sock);
 void    nick_command(ft_irc &irc, int i);
 void    kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name, const std::string& comment) ;
 void	topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& new_topic);

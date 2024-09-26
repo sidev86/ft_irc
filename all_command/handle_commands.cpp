@@ -51,7 +51,6 @@ void	send_to_command_function(ft_irc& irc, int i)
 	
 	while(ss >> args[index])
 		index++;
-	
 	if (word == "KICK")
 		kick_command(irc, i, irc.client[i].nick, args[0], args[1], extract_message(second_command(irc)));
 	else if (word == "TOPIC")
@@ -72,7 +71,7 @@ void	operator_command(ft_irc& irc, int i)
 {
 	if (!check_number_of_arguments(irc.buffer))
 	{
-		send_error_message(irc, i, "461", first_command(irc) + ":Not enough parameters", irc.client[i].client_sock);
+		send_error_message(irc, i, "461", first_command(irc) + " :Not enough parameters", irc.client[i].client_sock);
 		return;
 	}	
 	send_to_command_function(irc, i);
@@ -82,7 +81,7 @@ void	channel_command(ft_irc& irc, int i)
 {
 	if (!check_number_of_arguments(irc.buffer))
 	{
-		send_error_message(irc, i, "461", first_command(irc) + ":Not enough parameters", irc.client[i].client_sock);
+		send_error_message(irc, i, "461", first_command(irc) + " :Not enough parameters", irc.client[i].client_sock);
 		return;
 	}
 	send_to_command_function(irc, i);

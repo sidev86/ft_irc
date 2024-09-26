@@ -2,7 +2,7 @@
 
 void    commands(ft_irc &irc, int i)
 {
-    std::string message = first_command(irc) + " :Unknown command";
+    std::string message = first_command(irc) + " Unknown command";
     std::string target;
 
     if (first_command(irc) == "KICK" || first_command(irc) == "TOPIC" || first_command(irc) == "INVITE" || first_command(irc) == "MODE")
@@ -23,7 +23,7 @@ void    commands(ft_irc &irc, int i)
 void    autentication(ft_irc &irc, int i)
 {
     std::string cmd = first_command(irc);
-    std::string message =" :You have not registered";
+    std::string message =":You have not registered";
     if (cmd == "\0")
         return ;
     if (cmd == "PASS" && irc.client[i].is_pass == false)
@@ -53,7 +53,6 @@ int registretion(ft_irc &irc, int i)
         autentication(irc, i);
     else
     {
-        //std::cout << "client = " << irc.buffer << std::endl;
         if (first_command(irc) == "PING")
         {
             const std::string &messages = "PONG :" + second_command(irc);

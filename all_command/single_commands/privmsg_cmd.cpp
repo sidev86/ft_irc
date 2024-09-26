@@ -113,7 +113,7 @@ void privmsg_command(ft_irc& irc, int i, const std::string& target)
     for (size_t j = 0; j < individual_targets.size(); ++j)
     {
         const std::string& target = individual_targets[j];
-        if (target[0] == '#')
+        if (target[0] == '#' || target[0] == '&' || target[0] == '+')
         {
             std::vector<Channel>::iterator it = findChannel(target, irc.channels);
             if (it == irc.channels.end())
@@ -129,8 +129,8 @@ void privmsg_command(ft_irc& irc, int i, const std::string& target)
             int userIndex = get_user_index(irc.client, target);
             if (userIndex == -1)
             {
-                std::string errMsg = "401 " + target + " :No such nick/channel\r\n";
-                send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
+                std::string errMsg = target + " :No such nick/channel\r\n";
+                send_error_message(irc, i, "401", errMsg, irc.client[i].client_sock);
                 continue;
             }
             if (individual_target != irc.client[i].nick)

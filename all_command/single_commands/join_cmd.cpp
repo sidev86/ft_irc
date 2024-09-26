@@ -134,7 +134,7 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
     }
     if (user_channels >= MAX_CHANNELS_PER_USER)
     {
-        irc.msg =" " + channel_name + " :You have joined too many channels";
+        irc.msg =channel_name + " :You have joined too many channels";
 		send_error_message(irc, i, "405", irc.msg, irc.client[i].client_sock);
         return;
     }
@@ -149,7 +149,7 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 	{
 		if (!key.empty())
 		{
-			send_error_message(irc, i, "461", "", irc.client[i].client_sock);
+			send_error_message(irc, i, "461", first_command(irc) + " :Not enough parameters", irc.client[i].client_sock);
 			return;
 		}
 		create_channel(irc, i, channel_name, nick, it);
@@ -158,7 +158,7 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 	{
 		if (!key.empty() && it->has_key == false)
 		{
-			send_error_message(irc, i, "461", "", irc.client[i].client_sock);
+			send_error_message(irc, i, "461", first_command(irc) + " :Not enough parameters", irc.client[i].client_sock);
 			return;
 		}
 		if (!join_on_existing_channel(irc, i, channel_name, nick, it, key))

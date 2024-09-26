@@ -21,7 +21,7 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 	std::vector<client_info>::iterator user_it = findUserInChannel(nick_name, ch_iter->users);
 	if (user_it != ch_iter->users.end() || oper_name == nick_name) 
 	{
-		message = ":is ";
+		message = ":is already on channel";
 		send_error_message(irc, i, "443", message, irc.client[i].client_sock);
 		return;
 	}
@@ -35,7 +35,7 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 	if (!nick_exist(irc.client, nick_name))
 	{
 		message = nick_name + " :No such nick/channel";
-		send_error_message(irc, i, "401", message, irc.client[i].client_sock);
+		send_error_message(irc, i, "401", nick_name + " :No such nick/channel", irc.client[i].client_sock);
 		return;
 	}
 	int i2 = get_user_index(irc.client, nick_name);
@@ -46,6 +46,6 @@ void invite_command(ft_irc& irc, int i, const std::string& oper_name, const std:
 		message =  message + " INVITE " + nick_name + " :" + channel_name + "\r\n";
     	send(irc.client[i2].client_sock, message.c_str(), message.length(), 0);
 	}
-	std::string invite = " " + channel_name + nick_name ;
+	std::string invite =  nick_name + " " + channel_name + " :Invite successful";
 	send_error_message(irc, i, "341", invite, irc.client[i].client_sock);
 }

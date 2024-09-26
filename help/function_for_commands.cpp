@@ -26,7 +26,7 @@ std::string user_list(Channel& channel_name)
 	std::string message;
 	std::string users_list;
 	
-	message =" = " + channel_name._name + " :";
+	message ="= " + channel_name._name + " :";
 	for (std::vector<client_info>::iterator op_it = channel_name.operatorUsers.begin(); op_it != channel_name.operatorUsers.end(); ++op_it)
 		users_list += "@" + op_it->nick + " ";
 	std::vector<client_info>::iterator op_it = channel_name.operatorUsers.begin();
@@ -54,6 +54,7 @@ std::string user_list(Channel& channel_name)
 
 void update_channel_list(ft_irc& irc, Channel& channel_name)
 {
+	std::cout << "updating channel list..." << std::endl;
 	std::string message = user_list(channel_name);
 	std::string end_users = channel_name._name + " :End of /NAMES list";
     for (unsigned int op = 0;op != channel_name.operatorUsers.size(); op++)
