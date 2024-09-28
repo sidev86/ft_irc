@@ -37,6 +37,7 @@ class client_info
         std::string host;
         std::string server;
         std::string realname;
+        std::string buffer_d;
         bool    authenticated;
         bool    is_nick;
         bool    is_user;
@@ -68,10 +69,9 @@ class ft_irc
         std::string port;
         std::string pass_server;
         std::string msg;
-        std::string buffer_d;
-        std::vector<struct pollfd> p_fds;
         server_info server;
         char buffer[512];
+        std::vector<struct pollfd> p_fds;
         std::vector<client_info> client;
         std::vector<Channel> channels;
         bool server_suspended;

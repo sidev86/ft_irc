@@ -32,7 +32,7 @@ int	join_to_channel(ft_irc& irc, Channel& channel, const std::string& nick, int 
 	}
 	else
 	{
-		irc.msg = nick + " " + channel._name + " :is already on channel";
+		irc.msg = channel._name + " :is already on channel";
 		send_error_message(irc, i, "443", irc.msg, irc.client[i].client_sock);
 		return (0);
 	}
@@ -93,7 +93,7 @@ int join_on_existing_channel(ft_irc& irc, int i, const std::string& channel_name
 	std::vector<client_info>::iterator user_it = findUserInChannel(nick, it->users);
 	if (user_it != it->users.end())
 	{
-		irc.msg = nick + " " + it->_name + " :is already on channel";
+		irc.msg =it->_name + " :is already on channel";
 		send_error_message(irc, i, "443", irc.msg, irc.client[i].client_sock);
 		return (0);
 	}	

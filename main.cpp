@@ -93,6 +93,12 @@ int main(int c, char **v)
         return (1);
     if (valid_password(v[2], global_irc) == false)
         return (1);
+    try {
     if (handle_server(global_irc) == 1)
         return (1);
+    }
+    catch (std::exception &e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
 }

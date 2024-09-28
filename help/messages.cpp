@@ -9,12 +9,12 @@ void client_message(ft_irc &irc, int i, const std::string &command, const std::s
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
     message = message + " " + ex_message;
     message = message + "\r\n";
-    send(irc.client[i].client_sock, message.c_str(), message.length(), 0);
+    if (irc.client[i].client_sock > 0)
+        send(irc.client[i].client_sock, message.c_str(), message.length(), 0);
 }
 
 void client_message_all_users(ft_irc &irc, int i, int t, const std::string &command, const std::string &ex_message)
 {
-    (void)i;
     std::string message;
     if (command.empty())
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
@@ -22,20 +22,21 @@ void client_message_all_users(ft_irc &irc, int i, int t, const std::string &comm
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
     message += " " + ex_message;
     message += "\r\n";
-    send(irc.client[t].client_sock, message.c_str(), message.length(), 0);
+    if (irc.client[t].client_sock > 0)
+        send(irc.client[t].client_sock, message.c_str(), message.length(), 0);
 }
 
 void client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message)
 {
-	(void)i;
 	std::string message;
 	if (command.empty())
 		message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
 	else
 		message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
-	message = message + " " + ex_message;
+    message = message + " " + ex_message;
 	message = message + "\r\n";
-	send(channel.users[t].client_sock, message.c_str(), message.length(), 0);
+    if (channel.users[t].client_sock > 0 && irc.client[i].client_sock > 0)
+	    send(channel.users[t].client_sock, message.c_str(), message.length(), 0);
 }
 
 void send_error_message(ft_irc &irc, int i, const std::string err_code, const std::string &message, int sock)
@@ -45,7 +46,8 @@ void send_error_message(ft_irc &irc, int i, const std::string err_code, const st
         msg_error = ":" + irc.client[i].server + " " + err_code + " " + irc.client[i].nick + " " + message + "\r\n";
     else
         msg_error = ":unknown " + err_code + " * " + message + "\r\n";
-    send(sock, msg_error.c_str(), msg_error.size(), 0);
+    if (sock > 0)
+        send(sock, msg_error.c_str(), msg_error.size(), 0);
 }
 void welcome_msg(ft_irc &irc, int i)
 {

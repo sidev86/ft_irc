@@ -4,44 +4,45 @@ void quit_command(ft_irc &irc, int i, const std::string& comment)
 {
     std::string message;
     unsigned long int t;
-    
     if (!irc.channels.empty())
     {
-    	for (t = 0; t < irc.client.size(); t++)
-		{
-			for (std::vector<Channel>::iterator ch_it = irc.channels.begin(); ch_it != irc.channels.end(); ch_it++)
+        std::vector<Channel>::iterator it = irc.channels.begin();
+        while (it != irc.channels.end())
+        {
+			it->DeleteUserFromChannel(irc, i);
+			if (it->_num_users <= 0)
+				it = irc.channels.erase(it);
+			else if (it->operatorCount() == 0 && it->_num_users > 0)
 			{
-				if (findUserInChannel(irc.client[i].nick, ch_it->users) != ch_it->users.end() && findUserInChannel(irc.client[t].nick, ch_it->users) != ch_it->users.end() && i != (int)t)
+				it->next_operator();
+				message = it->_name + " +o " + it->operatorUsers[0].nick;
+				for (t = 0; t < it->users.size(); t++)
 				{
-					if (!irc.client[t].quit_received)
+					irc.client[t].quit_received = false;
+					if (!irc.client[t].quit_received == false)
 					{
 						irc.client[t].quit_received = true;
 						if (comment.empty())
 							message = ":Client Quit";
 						else
 							message = ":" + comment;
-						client_message_all_users(irc, i, (int)t, "QUIT", message);
+						if (!it->operatorUsers.empty() && !it->users.empty())
+							client_message_all_users(irc, i, (int)t, "QUIT", message);
 					}
+					std::cout << "saaaaaas" << std::endl;
+					client_message_in_channel(irc, *it, i, (int)t, "MODE", message);
+					std::cout << "fine saaas" << std::endl;
 				}
+				std::cout << "update\n";
+				update_channel_list(irc, *it);
 			}
-			irc.client[t].quit_received = false;
-		}
-        std::vector<Channel>::iterator it = irc.channels.begin();
-        while (it != irc.channels.end())
-        {
-			it->DeleteUserFromChannel(irc, i);
-
-			if (it->_num_users <= 0)
-				it = irc.channels.erase(it);
-			else if (it->operatorCount() <= 0)
-				it->next_operator();
 			else
 				++it;
         }
     }
     std::string secondCmd = second_command(irc);
     if (secondCmd.empty())
-        client_message(irc, i, "QUIT", "");
+		client_message(irc, i, "QUIT", "");
     close(irc.client[i].client_sock);
     for (std::vector<struct pollfd>::iterator it = irc.p_fds.begin(); it != irc.p_fds.end(); ++it)
     {
@@ -51,6 +52,5 @@ void quit_command(ft_irc &irc, int i, const std::string& comment)
             break;
         }
     }
-    
     irc.client.erase(irc.client.begin() + i);
 }

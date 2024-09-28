@@ -33,9 +33,12 @@ void part_command(ft_irc& irc, int i, const std::string& nick, const std::string
 	}
 	if (ch_iter->_num_users <= 0)
 		ch_iter = irc.channels.erase(ch_iter);
-	else
+	else if (ch_iter->operatorCount() == 0)
 	{
 		ch_iter->next_operator();
+		message = ch_iter->_name + " +o " + ch_iter->operatorUsers[0].nick;
+			for (t = 0; t < ch_iter->users.size(); t++)
+		client_message_in_channel(irc, *ch_iter, i, (int)t, "MODE", message);
 		update_channel_list(irc, *ch_iter);
 	}
 }

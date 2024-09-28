@@ -54,24 +54,31 @@ std::string user_list(Channel& channel_name)
 
 void update_channel_list(ft_irc& irc, Channel& channel_name)
 {
-	std::cout << "updating channel list..." << std::endl;
 	std::string message = user_list(channel_name);
 	std::string end_users = channel_name._name + " :End of /NAMES list";
-    for (unsigned int op = 0;op != channel_name.operatorUsers.size(); op++)
-    {
-        if (findUserInChannel(channel_name.operatorUsers[op].nick, channel_name.operatorUsers) != channel_name.operatorUsers.end())
-        {
-            send_error_message(irc, op, "353", message, channel_name.operatorUsers[op].client_sock);
-            send_error_message(irc, op, "366", end_users, channel_name.operatorUsers[op].client_sock);
-        }
-    }
-	for (unsigned int t = 0; t < channel_name.users.size(); t++)
+	if (!channel_name.operatorUsers.empty())
 	{
-    	if ((findUserInChannel(channel_name.users[t].nick, channel_name.users) != channel_name.users.end())
-        && channel_name.users[t].nick != channel_name.operatorUsers[0].nick)
+		for (unsigned int op = 0;op != channel_name.operatorUsers.size(); op++)
 		{
-			send_error_message(irc, t, "353", message, channel_name.users[t].client_sock);
-			send_error_message(irc, t, "366", end_users, channel_name.users[t].client_sock);
+			if (findUserInChannel(channel_name.operatorUsers[op].nick, channel_name.operatorUsers) != channel_name.operatorUsers.end())
+			{
+				if (channel_name.operatorUsers.size() == 1)
+					continue;
+				send_error_message(irc, op, "353", message, channel_name.operatorUsers[op].client_sock);
+				send_error_message(irc, op, "366", end_users, channel_name.operatorUsers[op].client_sock);
+			}
+		}
+	}
+	if (!channel_name.users.empty())
+	{
+		for (unsigned int t = 0; t < channel_name.users.size(); t++)
+		{
+			if ((findUserInChannel(channel_name.users[t].nick, channel_name.users) != channel_name.users.end())
+			&& channel_name.users[t].nick != channel_name.operatorUsers[0].nick)
+			{
+				send_error_message(irc, t, "353", message, channel_name.users[t].client_sock);
+				send_error_message(irc, t, "366", end_users, channel_name.users[t].client_sock);
+			}
 		}
 	}
 }

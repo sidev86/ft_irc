@@ -11,15 +11,16 @@ std::string extract_message(const std::string &buffer)
 
 bool    nickmember(const std::string nick, Channel &channel)
 {
-    if (channel.users.empty() != 0)
+    if (!channel.users.empty())
     {
         for (size_t i = 0; i < channel.users.size(); i++)
         {
             if (channel.users[i].nick == nick)
                 return true;
+
         }
     }
-    if (channel.operatorUsers.empty() != 0)
+    if (!channel.operatorUsers.empty())
     {
         for (size_t i = 0; i < channel.operatorUsers.size(); i++)
         {

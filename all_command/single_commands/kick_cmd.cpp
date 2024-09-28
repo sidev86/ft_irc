@@ -17,11 +17,6 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 		send_error_message(irc, i, "441", ch_iter->_name + " :You’re not on that channel", irc.client[i].client_sock);
 		return;
 	}
-	if (oper_name == nick_name)
-	{
-		send_error_message(irc, i, "482", ch_iter->_name + " :You cannot kick yourself from a channel", irc.client[i].client_sock);
-		return ;
-	}
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
 	{
 		send_error_message(irc, i, "482", ch_iter->_name + " :You’re not channel operator", irc.client[i].client_sock);
