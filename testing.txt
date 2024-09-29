@@ -1,0 +1,14 @@
+
+- Connessione di konversation a server -> deve restare attiva?
+- Imposto limite utenti ad un canale che ha già più utenti di quelli impostati come limite
+- Imposto modalità +i e +k insieme
+- Se utente operator lascia canale -> cessione operator ad altro utente -> testare se funziona in tutti i casi
+- Test su comandi parziali (ctrl-d) -> provare anche mettendo spazi
+- Validità valore di limite utenti. (no negativo, no lettere)
+- Controllo notifiche sul canale -> arrivano a tutti gli utenti del canale? -> non devono arrivare ad altri user
+- Controllo che canale viene eliminato se tutti gli user lasciano canale.
+- PRIVMSG controllo funzionamento con vari parametri
+- Controllo che comandi operator possano essere eseguiti solo da operator
+- Controllo validità nome canale
+- Controllo leaks dopo flooding su canale
+- Controllo memory leaks su ctrl-c
