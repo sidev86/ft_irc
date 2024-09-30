@@ -105,6 +105,8 @@ void    client_message_all_users(ft_irc &irc, int i, int t, const std::string &c
 void    removeChars(std::string& str, const char charsToRemove);
 void    part_command(ft_irc& irc, int i, const std::string& user_name, const std::string& channel_name);
 void    handle_termination(int signal);
+void    client_message_user(ft_irc &irc, int i, const std::string &command, const std::string &ex_message, client_info &user);
+void    client_message_operator(ft_irc &irc, int i, const std::string &command, const std::string &ex_message, client_info &oper);
 void    handle_sigtstp(int signal);
 void	list_command(ft_irc& irc, int i);
 void	operator_command(ft_irc& irc, int i);
@@ -127,6 +129,7 @@ void    privmsg_command(ft_irc& irc, int i, const std::string& target);
 void    client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message);
 void    quitting_channels(ft_irc& irc, int i);
 void    update_channel_list(ft_irc& irc, Channel& channel_name);
+void	reply_to_channel(ft_irc& irc, int i, Channel &channel_name);
 
 bool    nickmember(const std::string nick, Channel &channel);
 bool	isOperator(const std::string& oper_name, std::vector<client_info>& operatorUsers);

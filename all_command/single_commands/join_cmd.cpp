@@ -40,8 +40,24 @@ int	join_to_channel(ft_irc& irc, Channel& channel, const std::string& nick, int 
 
 void	reply_to_channel(ft_irc& irc, int i, Channel &channel_name)
 {
-	std::string message;
-	update_channel_list(irc, channel_name);
+	std::string message = user_list(channel_name);
+	std::string end_users = channel_name._name + " :End of /NAMES list";
+	if (channel_name.operatorUsers.size() == 1 && channel_name.num_user() == 1)
+	{
+		if (!channel_name.operatorUsers.empty())
+		{
+			for (unsigned int op = 0;op != channel_name.operatorUsers.size(); op++)
+			{
+				if (findUserInChannel(channel_name.operatorUsers[op].nick, channel_name.operatorUsers) != channel_name.operatorUsers.end())
+				{
+					send_error_message(irc, op, "353", message, channel_name.operatorUsers[op].client_sock);
+					send_error_message(irc, op, "366", end_users, channel_name.operatorUsers[op].client_sock);
+				}
+			}
+		}
+	}
+	else
+		update_channel_list(irc, channel_name);
 	std::string num = "332";
 	if (channel_name._topic.empty())
 	{
@@ -49,7 +65,7 @@ void	reply_to_channel(ft_irc& irc, int i, Channel &channel_name)
 		message =channel_name._name + " :No topic is set";
 	}
 	else
-		message =channel_name._name + " :" + channel_name._topic;
+		message = channel_name._name + " :" + channel_name._topic;
 	send_error_message(irc, i, num, message, irc.client[i].client_sock);
 }
 
@@ -166,7 +182,6 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 	}
 	if (!userAlreadyInChannel(*it, nick))
 		it->addUser(irc, i);
-	
 	irc.msg = channel_name;
 	for (t = 0; t < it->users.size(); t++)
 		client_message_in_channel(irc, *it, i, (int)t, "JOIN", irc.msg);

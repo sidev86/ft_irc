@@ -2,9 +2,11 @@
 
 std::string extract_message(const std::string &buffer)
 {
-    size_t pos = buffer.find(':');
-    if (pos != std::string::npos) {
-        return buffer.substr(pos + 1);
+    if (!buffer.empty())
+    {
+        size_t pos = buffer.find(':');
+        if (pos != std::string::npos)
+            return buffer.substr(pos + 1);
     }
     return "";
 }

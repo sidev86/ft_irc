@@ -220,6 +220,8 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 		send_error_message(irc, i, "442", ch_iter->_name + " :You’re not on that channel", irc.client[i].client_sock);
 		return ;
 	}
+	if (option[1] == 'b')
+		return;
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
 	{
 		message =  ch_iter->_name + " :You’re not channel operator";
@@ -228,8 +230,6 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	}
 	if (!valid_option(option) || option.length() > 2)
 	{
-		if (option[1] == 'b')
-			return;
 		message = option + " :is unknown mode char to me";
 		send_error_message(irc, i, "472", message, irc.client[i].client_sock);
 		return;

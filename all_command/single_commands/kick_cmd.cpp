@@ -12,15 +12,15 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 		return;
 	}
 	std::vector<client_info>::iterator user_it = findUserInChannel(nick_name, ch_iter->users);
+	if (oper_name == nick_name)
+	{
+		send_error_message(irc, i, "482", ch_iter->_name + " :You’re not channel operator", irc.client[i].client_sock);
+		return ;
+	}
 	if (user_it == ch_iter->users.end() || ch_iter->isMember(irc.client[i]) == false || findUserInChannel(nick_name, ch_iter->users) == ch_iter->users.end()) 
 	{
 		send_error_message(irc, i, "441", ch_iter->_name + " :You’re not on that channel", irc.client[i].client_sock);
 		return;
-	}
-	if (oper_name == nick_name)
-	{
-		send_error_message(irc, i, "482", ch_iter->_name + " :You cannot kick yourself from a channel", irc.client[i].client_sock);
-		return ;
 	}
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
 	{
@@ -36,9 +36,12 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	ch_iter->removeInvited(nick_name);
 	if (ch_iter->_num_users <= 0)
 		ch_iter = irc.channels.erase(ch_iter);
-	else
+	else if (ch_iter->operatorCount() == 0)
 	{
 		ch_iter->next_operator();
+		message = ch_iter->_name + " +o " + ch_iter->operatorUsers[0].nick;
+			for (t = 0; t < ch_iter->users.size(); t++)
+		client_message_in_channel(irc, *ch_iter, i, (int)t, "MODE", message);
 		update_channel_list(irc, *ch_iter);
 	}
 }

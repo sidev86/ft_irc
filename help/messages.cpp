@@ -13,6 +13,32 @@ void client_message(ft_irc &irc, int i, const std::string &command, const std::s
         send(irc.client[i].client_sock, message.c_str(), message.length(), 0);
 }
 
+void client_message_user(ft_irc &irc, int i, const std::string &command, const std::string &ex_message, client_info &user)
+{
+    std::string message;
+    if (command.empty())
+        message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
+    else
+        message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
+    message += " " + ex_message;
+    message += "\r\n";
+    if (user.client_sock > 0)
+        send(user.client_sock, message.c_str(), message.length(), 0);
+}
+
+void client_message_operator(ft_irc &irc, int i, const std::string &command, const std::string &ex_message, client_info &oper)
+{
+    std::string message;
+    if (command.empty())
+        message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
+    else
+        message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
+    message += " " + ex_message;
+    message += "\r\n";
+    if (oper.client_sock > 0)
+        send(oper.client_sock, message.c_str(), message.length(), 0);
+}
+
 void client_message_all_users(ft_irc &irc, int i, int t, const std::string &command, const std::string &ex_message)
 {
     std::string message;

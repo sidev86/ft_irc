@@ -32,6 +32,7 @@ void Channel::addUser(ft_irc &irc, int i)
     newClient.client_addr = irc.client[i].client_addr;
     newClient.client_sock = irc.client[i].client_sock;
     newClient.client_len = irc.client[i].client_len;
+    newClient.quit_received = false;
 
     users.push_back(newClient);
     _num_users++;
@@ -70,6 +71,7 @@ void Channel::addOperatorUser(const std::string& oper_name, const std::string& n
     newOperator.user = oper_name;
     newOperator.nick = nick;
     newOperator.client_sock = sock;
+    newOperator.quit_received = false;
     operatorUsers.push_back(newOperator);
 }
 
