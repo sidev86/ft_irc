@@ -55,6 +55,9 @@ void client_message_all_users(ft_irc &irc, int i, int t, const std::string &comm
 void client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message)
 {
 	std::string message;
+	t = t;
+	channel = channel;
+	
 	if (command.empty())
 		message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
 	else
